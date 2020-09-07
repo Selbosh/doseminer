@@ -1,0 +1,22 @@
+Package: doseminer
+Type: Package
+Title: Dose Miner
+Version: 0.0.1.9000
+Author: David Selby
+Maintainer: David Selby <david.selby@manchester.ac.uk>
+Description: Extract prescription dosage data from CPRD free text.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    testthat
+RoxygenNote: 7.1.1
+Collate: 
+    'dose_number.R'
+    'dose_unit.R'
+    'utils.R'
+    'keywords.R'
+    'new.R'
+    'patterns.R'
+Depends: 
+    R (>= 2.10)
