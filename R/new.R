@@ -114,6 +114,7 @@ guess_number <- function(text) {
 #'            old_min = common_dosages[1:1000, 'DF.MIN'],
 #'            old_max = common_dosages[1:1000, 'DF.MAX'],
 #'            new = unname(guess_frequency(common_dosages[1:1000, 'PRESCRIPTION'])))
+#' View(x)
 #' @importFrom glue glue
 #' @importFrom stringr str_extract_all
 #' @export
@@ -123,7 +124,7 @@ guess_frequency <- function(text) {
   df_meal <- c('meals?', 'food', 'breakfast', 'lunch', 'dinner', 'supper',
                '(?:main|evening) meal')
   df_meal_how <- c('before', 'after', 'with', 'at', 'qac', 'between')
-  df_time_unit <- c('min(?:ute)?s?', 'h(?:ou)?rs?', 'd(?:ays?)?', 'w(?:ee)?ks?',
+  df_time_unit <- c('min(?:ute)?s?', 'h(?:ou)?rs?(?=\\b)', '(?<=\\b)d(?:ays?)?(?=\\b)', 'w(?:ee)?ks?',
                     'months?', 'y(?:ea)?rs?', 'midday', 'fortnight')
   df_every <- c('an?', 'each', 'eve?ry', 'per', '/')
   df_when <- c('at', 'in', 'before', 'after', 'during')
@@ -131,22 +132,22 @@ guess_frequency <- function(text) {
   df_timely <- paste0(OR(c(
     'd(?:ai)?', 'h(?:ou)?r?', '(?:bi)?w(?:ee)?k', '(?:bi)?mo?n?th',
     '(?:fort)?night', 'y(?:ea)?r')), 'ly')
-  df_time_unit <- c('min(?:ute)?s?', 'h(?:ou)?rs?', 'd(?:ays?)?', 'w(?:ee)?ks?',
+  df_time_unit <- c('min(?:ute)?s?', 'h(?:ou)?rs?', '(?<=\\b)d(?:ays?)?(?=\\b)', 'w(?:ee)?ks?',
                     'months?', 'y(?:ea)?rs?', 'midday', 'fortnight')
-  df_period <- c('mor(?:ne|ning)?', 'wk', 'eve(?:ning)?', 'd(?:ay)?',
+  df_period <- c('mor(?:ne|ning)?', 'wk', 'eve(?:ning)?', '(?<=\\b)d(?:ay)?(?=\\b)',
                  '(?:after)?noon', 'tea time', 'bed(?:time)?', '[ap]m',
                  'midday', '(?:mid)?night', 'nocte?', 'noc', 'mane',
                  'dinner ?time', 'lunch ?time')
-  df_times <- glue::glue('once', 'twice', 'thrice', '(?:up ?)?(?:to )?{OR(nums)} times?', .sep = '|')
   nums <- paste('one', 'two', 'three', 'four(?:teen)?', 'five',
                 'six(?:teen)?', 'seven(?:teen)?', 'eight(?:een)?',
                 'nine(?:teen)', 'ten', 'eleven', 'twelve', 'thirteen',
                 'fifteen', 'twenty', '\\d{1,5}\\.?\\d{0,5}',
                 sep = '|')
+  df_times <- glue::glue('once', 'twice', 'thrice', '(?:up ?)?(?:to )?{OR(nums)} times?', .sep = '|')
 
   df_per_time_unit <- glue::glue(
     '{OR(df_every)} {OR(nums)}(?: .)? {OR(df_time_unit)}',
-    '({OR(c(df_every, df_when))}(?: .)? )?{OR(df_period)}',
+    '({OR(c(df_every, df_when))}(?: .)? )?{OR(df_period)}', ##
     '{OR(df_when)} \\d{{1,4}}',
     '{OR(df_times)}(?:(?: {OR(df_every)})? {OR(df_time_unit)})?',
     .sep = '|'
@@ -170,12 +171,28 @@ guess_frequency <- function(text) {
     '^{df_uber_number}(?= (?:x )?{OR(df_every)} {OR(df_time_unit)})', # doesn't seem right - l167 of frequency_phase.mixup - doesn't capture time unit.
     '^{df_uber_number} ms?ls? [ob]d',
     '^{df_uber_number} {OR(df_per_time_unit)} {OR(df_uber_number)} {OR(df_per_time_unit)}',
+    '{OR(df_per_time_unit)}',
     .sep = '|'
   )
   #message(patterns) # debug
   matches <- stringr::str_extract_all(std_text, patterns, simplify = TRUE)
   longest <- apply(matches, 1, function(x) x[which.max(nchar(x))])
   setNames(longest, text)
+}
+
+#' Convert extracted into numeric daily frequency of dose
+#'
+#' Based on the script \code{freq_word_con.py} in original algorithm.
+#'
+#' @param string Text extracted by \code{\link{guess_frequency}} (probably should rename this \code{extract_} or \code{match_})
+#'
+#' @return Estimated (minimum and maximum) times per day dose is administered, as numeric value.
+#' @export
+parse_frequency <- function(string) {
+  # 3 times per day
+  # 3 times daily
+  # 3 every day
+  # interval is converted later, in conv_dose_interval.py and add_dose_interval.py
 }
 
 #' Estimate the time between doses for a prescription.

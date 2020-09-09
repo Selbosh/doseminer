@@ -18,4 +18,5 @@ x <- data.frame(text = common_dosages[1:1000, 'PRESCRIPTION'],
            old_min = common_dosages[1:1000, 'DF.MIN'],
            old_max = common_dosages[1:1000, 'DF.MAX'],
            new = unname(guess_frequency(common_dosages[1:1000, 'PRESCRIPTION'])))
+View(x)
 }
