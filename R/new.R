@@ -1,14 +1,3 @@
-# make this a function so we don't have to worry about code order
-# dose_unit <- paste('capsules?', 'caps?', 'sachets?', 'dro?ps?', 'dr', 'ampoules?',
-#                'amps?', 'suppository?', 'pills?', 'blisters?', 'sprays?',
-#                '(?<=[0-9] )spr', '(?<=[0-9] )suppos',
-#                'tab(?:let)?s?', 'puff?s?', 'mls?', 'msl',
-#                'millil(?:it(?:er|re)s?)?',
-#                'grams?', 'gms?', 'g', 'mcg', 'micro ?grams?', 'milli ?grams?',
-#                'mgs?', 'inh', 'capfull?s?', 'vials?', 'patch(?:es)?',
-#                'bolus(?:es)?', 'lo[sz]enges?', 'ounces?', 'pack(?:et)?s?',
-#                'units?', 'pastilles?', 'ounces?', sep = '|')
-
 #' Guess dosage from prescription free text
 #'
 #' @examples
@@ -48,7 +37,6 @@ guess_prescription <- function(text) {
 #' sanitize_prescription(c('2mg per day', '1xdaily', 'a2b', '  double  spaced  ',
 #'                      'newline\ntab\treturn\r', '2by14', 'take q4d'))
 #'
-#' @include keywords.R
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_replace_all
 #' @importFrom glue glue

@@ -3,8 +3,6 @@
 #' Mainly for internal use. You can list all available patterns with
 #' \code{names(doseminer:::patterns)}
 #'
-#' @include utils.R
-#' @include keywords.R
 #' patterns <- within(list(), {
 #'   dose_unit <- regex_data_or(dose_dict, '\\b(?:{DoseUnit*})')
 #'

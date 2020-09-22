@@ -15,6 +15,14 @@ call \code{dose_dict()} with no argument to return the whole dictionary.
   \item unit
   \item numbers
   \item latin
+  \item meal
+  \item meal_how
+  \item time_unit
+  \item timely
+  \item period
+  \item ordinal
+  \item as_needed
+  \item verb
 }}
 }
 \description{

@@ -1,7 +1,7 @@
 Package: doseminer
 Type: Package
 Title: Dose Miner
-Version: 0.0.2.9000
+Version: 0.0.2.9001
 Author: David Selby
 Maintainer: David Selby <david.selby@manchester.ac.uk>
 Description: Extract prescription dosage data from CPRD free text.
@@ -13,10 +13,3 @@ Suggests:
 RoxygenNote: 7.1.1
 Depends: 
     R (>= 2.10)
-Collate: 
-    'dose_number.R'
-    'dose_unit.R'
-    'utils.R'
-    'keywords.R'
-    'new.R'
-    'patterns.R'
