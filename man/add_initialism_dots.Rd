@@ -6,7 +6,12 @@
 \usage{
 add_initialism_dots(x)
 }
-\description{
+\arguments{
+\item{x}{a character vector
+
 Convenience function for building regular expressions.
-For example, \code{USA} can become \code{U.S.A}, \code{U.S.A.} and so on
+For example, \code{USA} can become \code{U.S.A}, \code{U.S.A.} and so on}
+}
+\description{
+Add optional dots to initialisms
 }

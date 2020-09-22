@@ -24,7 +24,7 @@ x <- tibble(
   text = common_dosages[1:1000, 'PRESCRIPTION'],
   old_min = common_dosages[1:1000, 'DN.MIN'],
   old_max = common_dosages[1:1000, 'DN.MAX'],
-  dntxt = extract_number_text(common_dosages[1:1000, 'PRESCRIPTION']),
+  dntxt = extract_dn_text(common_dosages[1:1000, 'PRESCRIPTION']),
   dose_num = convert_number_text(dntxt)
 )
 

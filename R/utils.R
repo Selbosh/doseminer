@@ -90,6 +90,8 @@ collapse_transformer <- function(regex = "[*]$", ...) {
 
 #' Add optional dots to initialisms
 #'
+#' @param x a character vector
+#'
 #' Convenience function for building regular expressions.
 #' For example, \code{USA} can become \code{U.S.A}, \code{U.S.A.} and so on
 add_initialism_dots <- function(x) {

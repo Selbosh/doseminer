@@ -24,14 +24,14 @@
 #'
 #' @importFrom stringr str_extract_all
 #' @export
-guess_dose_number <- function(text) {
-  std_text <- extract_drug_info(text)
-  number_matches <- stringr::str_extract_all(std_text, patterns$dose_number, simplify = TRUE)
-  longest_number <- apply(number_matches, 1, function(x) x[which.max(nchar(x))])
-  output <- word2num(longest_number)
-  # see default_dose_number.py
-  setNames(output, text)
-}
+# guess_dose_number <- function(text) {
+#   std_text <- extract_drug_info(text)
+#   number_matches <- stringr::str_extract_all(std_text, patterns$dose_number, simplify = TRUE)
+#   longest_number <- apply(number_matches, 1, function(x) x[which.max(nchar(x))])
+#   output <- word2num(longest_number)
+#   # see default_dose_number.py
+#   setNames(output, text)
+# }
 
 #' Extract text corresponding to dosage number
 #'
@@ -48,10 +48,10 @@ guess_dose_number <- function(text) {
 #'   text = common_dosages[1:1000, 'PRESCRIPTION'],
 #'   old_min = common_dosages[1:1000, 'DN.MIN'],
 #'   old_max = common_dosages[1:1000, 'DN.MAX'],
-#'   new = extract_number_text(common_dosages[1:1000, 'PRESCRIPTION'])
+#'   new = extract_dn_text(common_dosages[1:1000, 'PRESCRIPTION'])
 #' )
 #' @export
-extract_number_text <- function(text) {
+extract_dn_text <- function(text) {
   std_text <- extract_drug_info(text)
   std_text <- str_replace_all(std_text, '(apply|to be applied)( to the affected part)?', 'one')
   std_text <- str_replace_all(std_text, 'to be taken ', '')
@@ -66,8 +66,19 @@ extract_number_text <- function(text) {
                      'p\\.?r\\.?n\\.?', '\\dhrly', 'every (?:{nums}|\\d-\\d+) h(?:ou)?rs?(?: when required)?',
                      '(?:take )?(?:when|as) (?:directed|required|needed)',
                      .sep = '|')
-  patterns <- glue::glue('(?:{nums})(?:(?: or |-)(?:{nums}))?(?= (?!hours?)(?:\\w+ )?(?:{freq}))',
-                         '(?:{nums})(?= a day)', .sep = '|')
+  latin <- paste('nocte', 'dieb alt', 'alt h', 'mane', 'q\\.?[1-8]?\\.?[dh]\\.?',
+                 # '[bqt]ds?', '[bt]iw', '[bstq]id', 'bt', '[eq]od', 'qa[cdm]'
+                 paste(add_initialism_dots(c(
+                   'am', 'bd', 'bds', 'bh', 'bid', 'bis', 'biw', 'bt', 'eod',
+                   'hs', 'od', 'om', 'on', 'op', 'opd', 'pm', 'qac', 'qad',
+                   'qam', 'qd', 'qds', 'qhs', 'qid', 'qod', 'qpm', 'qqh', 'qwk',
+                   'sid', 'td', 'tds', 'tid', 'tiw')), collapse = '|'), sep = '|')
+  patterns <- glue::glue('(?:{nums})(?:(?: or |-)(?:{nums}))?(?= (?!hours?)(?:\\w+ )?(?:{freq}))', #?
+                         '(?:{nums}) \\d-?\\d? (?:mls?|msl)(?= spoon)',
+                         '(?:{nums})(?= a day)',
+                         '(?:{nums}) x \\d+\\.?\\d* (?:mls?|msl)',
+                         '^\\d(?:or|[.-])?\\d? (?:{latin})',
+                         .sep = '|')
   number_matches <- stringr::str_extract_all(std_text, patterns, simplify = TRUE)
   longest_number <- apply(number_matches, 1, function(x) x[which.max(nchar(x))])
   output <- word2num(longest_number)
@@ -90,7 +101,7 @@ extract_number_text <- function(text) {
 #'   text = common_dosages[1:1000, 'PRESCRIPTION'],
 #'   old_min = common_dosages[1:1000, 'DN.MIN'],
 #'   old_max = common_dosages[1:1000, 'DN.MAX'],
-#'   dntxt = extract_number_text(common_dosages[1:1000, 'PRESCRIPTION']),
+#'   dntxt = extract_dn_text(common_dosages[1:1000, 'PRESCRIPTION']),
 #'   dose_num = convert_number_text(dntxt)
 #' )
 #'
@@ -100,6 +111,8 @@ extract_number_text <- function(text) {
 #'
 #' @export
 convert_number_text <- function(x) {
+  # The purpose of this function is to convert the extracted text from
+  # guess_dose_number into a numeric format
   dbl_dose <- function(d) {
     d_num <- as.numeric(word2num(d[, 2]))
     avg <- mean(d_num)
@@ -110,6 +123,7 @@ convert_number_text <- function(x) {
                 'six(?:teen)?', 'seven(?:teen)?', 'eight(?:een)?',
                 'nine(?:teen)', 'ten', 'eleven', 'twelve', 'thirteen',
                 'fifteen', 'twenty', '\\d', sep = '|')
+  nums <- paste('\\d+\\.?\\d*', int, sep = '|')
   at <- paste('each', 'every', 'an?', 'in', 'at', 'per', 'during', 'after',
               'before', 'with', sep = '|')
   mealtime <- paste('mor(?:n|ning|e)?', 'eve(?:ning)?', '(?:after)?noon',
@@ -121,13 +135,39 @@ convert_number_text <- function(x) {
   n_at_meal <-
     glue::glue('(\\w+|\\d+.\\d+) (?:(?:{int}) times )?(?:{at}) (?:{mealtime})')
 
+  units <- paste('capsules?', 'caps?', 'sachets?', 'dro?ps?', 'dr', 'ampoules?',
+      'amps?', 'suppository?', 'pills?', 'blisters?', 'sprays?',
+      '(?<=[0-9] )spr', '(?<=[0-9] )suppos',
+      'tab(?:let)?s?', 'puff?s?', 'mls?', 'msl',
+      'millil(?:it(?:er|re)s?)?',
+      'grams?', 'gms?', 'g', 'mcg', 'micro ?grams?', 'milli ?grams?',
+      'mgs?', 'inh', 'capfull?s?', 'vials?', 'patch(?:es)?',
+      'bolus(?:es)?', 'lo[sz]enges?', 'ounces?', 'pack(?:et)?s?',
+      'units?', 'pastilles?', 'ounces?', sep = '|')
+
+  dose_unit <- glue::glue('(?:{nums}) ?(-|to|or) ?(?:{nums}) ?(?:{units})')
+  dose_unit_sng <- glue::glue('(?:{nums}) ?(-)? ?(?:{units})')
+  dose_unit_dbl <- glue::glue('(?:{dose_unit_sng}) ?(?:or|-|to) ?(?:{dose_unit_sng})')
+
   # development note:
   # name of column is the corresponding regex in word_digit_con.py
   matches <- data.frame(
-    regex4 = stringr::str_extract(x, '^[0-9]+(?= ?once)'),
+    regex4 =
+      stringr::str_extract(x, '^[0-9]+(?= ?once)'),
+
     dbl_meal_cmp = #glue::glue('{n_at_meal} ?(?:{meal})?(?: and)? {n_at_meal}') %>%
       stringr::str_match_all(x, n_at_meal) %>%
-      vapply(dbl_dose, character(1))
+      vapply(dbl_dose, character(1)),
+
+    dose_unit_dbl =
+      stringr::str_match_all(x, dose_unit_dbl) %>%
+      vapply(dbl_dose, character(1)),
+
+    dose_unit =
+      stringr::str_extract(x, dose_unit)#,
+
+    # num =
+    #   stringr::str_match(x, nums) # temp; fix me
   )
   setNames(word2num(dplyr::coalesce(!!!matches)), x)
 }
