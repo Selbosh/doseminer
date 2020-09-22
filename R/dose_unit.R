@@ -29,7 +29,7 @@
 #'
 #' @export
 guess_dose_unit <- function(text) {
-  unit_patterns <- sprintf('\\b(?:%s)\\b', dose_unit)
+  unit_patterns <- sprintf('\\b(?:%s)\\b', dose_dict('unit'))
   unit_names <- list(
     # based on add_dose_unit.py
     # maybe automatically drop trailing 's' and strip spaces.
@@ -64,7 +64,7 @@ guess_dose_unit <- function(text) {
   )
   unit_lookup <- setNames(rep(names(unit_names), lengths(unit_names)),
                           unlist(unit_names, FALSE, FALSE))
-  std_text <- extract_drug_info(text)
+  std_text <- sanitize_prescription(text)
   unit_matches <- stringr::str_extract_all(std_text, unit_patterns, simplify = TRUE)
   unit_text <- apply(unit_matches, 1, function(x) x[which.max(nchar(x))])
   setNames(unit_lookup[unit_text], text)

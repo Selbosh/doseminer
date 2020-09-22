@@ -34,44 +34,6 @@ regex_data_or <- function(.x, ..., .envir = parent.frame()) {
                   .envir = .envir)
 }
 
-#' Extract drug information
-#'
-#' Based on \code{drug_information_extraction.py}.
-#'
-#' The aim of this function is to replicate the abovementioned Python script.
-#' For now it will perform the following tasks:
-#' \itemize{
-#' \item Coerce to lower case
-#' \item Trim leading and trailing whitespace
-#' \item Replace pipes \code{|} with spaces (line 30)
-#' \item Replace a sequence \code{numberxword} with \code{number x word}
-#' \item Replace a sequence \code{numberword} with \code{number word}
-#' \item Replace a sequence \code{wordnumberword} with \code{word number word}
-#' \item Replace a sequence \code{numberwordnumber} with \code{number word number}
-#' \item Split up sequences with units (see line 40 of \code{.py} script)
-#' }
-#' We have also added some stuff that may not have been in the original script:
-#' replacing double spaces, tabs or newline characters with single spaces.
-#'
-#' @examples
-#' extract_drug_info(c('2mg per day', '1xdaily', 'a2b', '  double  spaced  ',
-#'                     'newline\ntab\treturn\r', '2by14', 'take q4d'))
-#'
-#' @include keywords.R
-#' @export
-extract_drug_info <- function(x) {
-  clean_text <- tolower(x)
-  replace <- trimws(gsub('\\|', ' ', clean_text))
-  replace_x <- gsub('([0-9]+)(x)([a-z]+)', '\\1 \\2 \\3', replace, perl = TRUE)
-  single_spaces <- gsub('([0-9]+)([a-z]+)', '\\1 \\2', replace_x, perl = TRUE)
-  single_spaces2 <- gsub('([a-z]+)([0-9]+)', '\\1 \\2', single_spaces, perl = TRUE)
-  spaces <- gsub('([a-z]+)([0-9]+)([a-z]+)', '\\1 \\2 \\3', single_spaces2, perl = TRUE)
-  spaces2 <- gsub('([0-9]+)([a-z]+)([0-9]+)', '\\1 \\2 \\3', spaces, perl = TRUE)
-  spaces3 <- gsub(regex_or('(\\d+)(\\s+)({dose_dict$DoseUnit*})(sid|bd)'),
-                  '\\1 \\2 \\3 \\4', spaces2, perl = TRUE)
-  gsub('\\s+', ' ', spaces3)
-}
-
 #' @importFrom glue identity_transformer glue_collapse
 collapse_transformer <- function(regex = "[*]$", ...) {
   function(text, envir) {

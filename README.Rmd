@@ -95,10 +95,10 @@ library(tibble)
 library(doseminer)
 results <- tibble(
   input_txt  = common_dosages[1:50, 'PRESCRIPTION'],
-  unit = guess_dose_unit(input_txt),
-  dose_txt  = extract_dn_text(input_txt),
-  numeric_dosage = convert_number_text(dose_txt),
-  daily_freq_txt  = guess_frequency(input_txt)
+  unit       = guess_dose_unit(input_txt),
+  dose_txt   = guess_number(input_txt),
+  freq_txt   = guess_frequency(input_txt),
+  dose_num   = convert_number_text(dose_txt)
 )
 results[is.na(results)] <- '' # for presentation purposes
 results

@@ -1,9 +1,6 @@
 R package doseminer
 ================
-
-David Selby  
-Belay Birlie  
-Katherine Dempsey  
+David SelbyBelay BirlieKatherine Dempsey
 
 <!-- badges: start -->
 
@@ -110,68 +107,68 @@ fairly clear.
 library(doseminer)
 results <- tibble(
   input_txt  = common_dosages[1:50, 'PRESCRIPTION'],
-  unit = guess_dose_unit(input_txt),
-  dose_txt  = extract_dn_text(input_txt),
-  numeric_dosage = convert_number_text(dose_txt),
-  daily_freq_txt  = guess_frequency(input_txt)
+  unit       = guess_dose_unit(input_txt),
+  dose_txt   = guess_number(input_txt),
+  freq_txt   = guess_frequency(input_txt),
+  dose_num   = convert_number_text(dose_txt)
 )
 results
 ```
 
 <div class="kable-table">
 
-| input\_txt                                      | unit | dose\_txt | numeric\_dosage | daily\_freq\_txt  |
-| :---------------------------------------------- | :--- | :-------- | :-------------- | :---------------- |
-| take one daily                                  |      | 1         |                 |                   |
-| as directed                                     |      |           |                 |                   |
-| one every day                                   |      | 1         |                 | every day         |
-| one twice a day                                 |      | 1         |                 | twice a day       |
-| 1 every day                                     |      | 1         |                 | every day         |
-| one three times a day                           |      | 1         |                 | three times a day |
-| take one each morning                           |      | 1         |                 | each morning      |
-| one every morning                               |      | 1         |                 | every morning     |
-| twice a day                                     |      |           |                 | twice a day       |
-| take one at night                               |      | 1         |                 | at night          |
-| every day                                       |      |           |                 | every day         |
-| three times a day                               |      |           |                 | three times a day |
-| take one twice daily                            |      | 1         |                 | twice             |
-| one daily                                       |      | 1         |                 | daily             |
-| take one 3 times/day                            |      | 1         |                 | 3 times           |
-| one every night                                 |      | 1         |                 | every night       |
-| 1 twice a day                                   |      | 1         |                 | twice a day       |
-| 1 daily                                         |      | 1         |                 | daily             |
-| one at night                                    |      | 1         |                 | at night          |
-| 1 three times a day                             |      | 1         |                 | three times a day |
-| one four times a day                            |      | 1         |                 | four times a day  |
-| 1 every morning                                 |      | 1         |                 | every morning     |
-| take one once daily                             |      | 1         |                 | once              |
-| when required                                   |      |           |                 |                   |
-| two every day                                   |      | 2         |                 | every day         |
-| four times a day                                |      |           |                 | four times a day  |
-| one in the morning                              |      | 1         |                 | morning           |
-| two twice a day                                 |      | 2         |                 | twice a day       |
-| take 1 or 2 4 times/day                         |      | 1 or 2    |                 | 4 times           |
-| inhale 2 doses as needed                        |      | 2         |                 |                   |
-| apply twice daily                               |      | 1         |                 | twice             |
-| take one as directed                            |      | 1         |                 |                   |
-| two four times a day when required              |      | 2         |                 | four times a day  |
-| 1 every night                                   |      | 1         |                 | every night       |
-| use as directed                                 |      |           |                 |                   |
-| 1 at night                                      |      | 1         |                 | at night          |
-| take one 4 times/day                            |      | 1         |                 | 4 times           |
-| inhale 2 doses twice daily                      |      | 2         |                 | twice             |
-| one 5ml spoonsful to be taken three times a day | ml   | 1 5 ml    |                 | three times a day |
-| one or two four times a day when required       |      | 1 or 2    |                 | four times a day  |
-| two three times a day                           |      | 2         |                 | three times a day |
-| apply 3 times/day                               |      | 1         |                 | 3 times           |
-| two every night                                 |      | 2         |                 | every night       |
-| apply as needed                                 |      | 1         |                 |                   |
-| two puff twice a day                            | puff | 2         |                 | twice a day       |
-| two four times a day                            |      | 2         |                 | four times a day  |
-| take two daily                                  |      | 2         |                 |                   |
-| 1 od                                            |      | 1 1       |                 | od                |
-| 1 in the morning                                |      | 1         |                 | morning           |
-| take one twice a day                            |      | 1         |                 | twice a day       |
+| input\_txt                                      | unit | dose\_txt | freq\_txt         | dose\_num |
+| :---------------------------------------------- | :--- | :-------- | :---------------- | :-------- |
+| take one daily                                  |      | 1         |                   |           |
+| as directed                                     |      |           |                   |           |
+| one every day                                   |      | 1         | every day         |           |
+| one twice a day                                 |      | 1         | twice a day       |           |
+| 1 every day                                     |      | 1         | every day         |           |
+| one three times a day                           |      | 1         | three times a day |           |
+| take one each morning                           |      | 1         | each morning      |           |
+| one every morning                               |      | 1         | every morning     |           |
+| twice a day                                     |      |           | twice a day       |           |
+| take one at night                               |      | 1         | at night          |           |
+| every day                                       |      |           | every day         |           |
+| three times a day                               |      |           | three times a day |           |
+| take one twice daily                            |      | 1         | twice             |           |
+| one daily                                       |      | 1         | daily             |           |
+| take one 3 times/day                            |      | 1         | 3 times           |           |
+| one every night                                 |      | 1         | every night       |           |
+| 1 twice a day                                   |      | 1         | twice a day       |           |
+| 1 daily                                         |      | 1         | daily             |           |
+| one at night                                    |      | 1         | at night          |           |
+| 1 three times a day                             |      | 1         | three times a day |           |
+| one four times a day                            |      | 1         | four times a day  |           |
+| 1 every morning                                 |      | 1         | every morning     |           |
+| take one once daily                             |      | 1         | once              |           |
+| when required                                   |      |           |                   |           |
+| two every day                                   |      | 2         | every day         |           |
+| four times a day                                |      |           | four times a day  |           |
+| one in the morning                              |      | 1         | morning           |           |
+| two twice a day                                 |      | 2         | twice a day       |           |
+| take 1 or 2 4 times/day                         |      | 1 or 2    | 4 times           |           |
+| inhale 2 doses as needed                        |      | 2         |                   |           |
+| apply twice daily                               |      | 1         | twice             |           |
+| take one as directed                            |      | 1         |                   |           |
+| two four times a day when required              |      | 2         | four times a day  |           |
+| 1 every night                                   |      | 1         | every night       |           |
+| use as directed                                 |      |           |                   |           |
+| 1 at night                                      |      | 1         | at night          |           |
+| take one 4 times/day                            |      | 1         | 4 times           |           |
+| inhale 2 doses twice daily                      |      | 2         | twice             |           |
+| one 5ml spoonsful to be taken three times a day | ml   | 1 5 ml    | three times a day |           |
+| one or two four times a day when required       |      | 1 or 2    | four times a day  |           |
+| two three times a day                           |      | 2         | three times a day |           |
+| apply 3 times/day                               |      | 1         | 3 times           |           |
+| two every night                                 |      | 2         | every night       |           |
+| apply as needed                                 |      | 1         |                   |           |
+| two puff twice a day                            | puff | 2         | twice a day       |           |
+| two four times a day                            |      | 2         | four times a day  |           |
+| take two daily                                  |      | 2         |                   |           |
+| 1 od                                            |      | 1 1       | od                |           |
+| 1 in the morning                                |      | 1         | morning           |           |
+| take one twice a day                            |      | 1         | twice a day       |           |
 
 </div>
 
