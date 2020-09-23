@@ -82,12 +82,12 @@ guess_number <- function(text) {
                    'p\\.?r\\.?n\\.?', '\\dhrly', 'every (?:{nums*}|\\d-\\d+) h(?:ou)?rs?(?: when required)?',
                    '(?:take )?(?:when|as) (?:directed|required|needed)',
                    .sep = '|')
-  patterns <- glue::glue('{nums*}(?:(?: or |-){nums*})?(?= (?!hours?)(?:\\w+ )?{freq*})',
-                         '{nums*} \\d-?\\d? (?:mls?|msl)(?= spoon)',
-                         '{nums*}(?= a day)',
-                         '{nums*} x \\d+\\.?\\d* (?:mls?|msl)',
-                         '^\\d(?:or|[.-])?\\d? {latin*}',
-                         .sep = '|')
+  patterns <- regex_or('{nums*}(?:(?: or |-){nums*})?(?= (?!hours?)(?:\\w+ )?{freq*})',
+                       '{nums*} \\d-?\\d? (?:mls?|msl)(?= spoon)',
+                       '{nums*}(?= a day)',
+                       '{nums*} x \\d+\\.?\\d* (?:mls?|msl)',
+                       '^\\d(?:or|[.-])?\\d? {latin*}',
+                       .sep = '|')
   number_matches <- stringr::str_extract_all(std_text, patterns, simplify = TRUE)
   longest_number <- apply(number_matches, 1, function(x) x[which.max(nchar(x))])
   output <- word2num(longest_number)
