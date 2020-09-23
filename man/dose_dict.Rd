@@ -30,4 +30,5 @@ Dictionary of useful patterns for text mining prescriptions
 }
 \examples{
 dose_dict('numbers')
+dose_dict(numbers)
 }

@@ -20,6 +20,7 @@
 #'
 #' @examples
 #' dose_dict('numbers')
+#' dose_dict(numbers)
 dose_dict <- function(x) {
     OR <- function(x) sprintf('(?:%s)', paste(x, collapse = '|'))
     dictionary <- list(
@@ -52,6 +53,7 @@ dose_dict <- function(x) {
                       'months?', 'y(?:ea)?rs?', 'midday', 'fortnight'),
         every = c('an?', 'each', 'eve?ry', 'per', '/'),
         when = c('at', 'in', 'before', 'after', 'during'),
+        small = c('mane', 'when', 'as', 'if', 'into', 'to'),
         timely = paste0(OR(c(
             'd(?:ai)?', 'h(?:ou)?r?', '(?:bi)?w(?:ee)?k', '(?:bi)?mo?n?th',
             '(?:fort)?night', 'y(?:ea)?r')), 'ly'),
@@ -71,5 +73,6 @@ dose_dict <- function(x) {
     if (missing(x))
       return(dictionary)
 
+    x <- as.character(substitute(x))
     OR(dictionary[[x]])
 }

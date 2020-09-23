@@ -74,8 +74,26 @@ guess_number <- function(text) {
   std_text <- str_replace_all(std_text, '(apply|to be applied)( to the affected part)?', 'one')
   std_text <- str_replace_all(std_text, 'to be taken ', '')
   std_text <- str_replace_all(std_text, '\\(s\\)', '')
+
   nums <- dose_dict('numbers')
   latin <- dose_dict('latin')
+  verb <- dose_dict('verb')
+  when <- dose_dict('when')
+  small <- dose_dict('small')
+  every <- dose_dict('every')
+  time_unit <- dose_dict('time_unit')
+  period <- dose_dict('period')
+  times <- regex_or('once', 'twice', 'thrice', '(?:up ?)?(?:to )?{nums*} times?', .sep = '|')
+
+  per_time_unit <- regex_or(
+    '{every*} {nums*}(?: .)? {time_unit*}',
+    '(?:{every}|{when})((?: .)? )?{period*}', ##
+    '{when*} \\d{{1,4}}',
+    '{times*}(?:(?: {every*})? {time_unit*})?',
+    '{dose_dict("timely")}',
+    .sep = '|'
+  )
+
   freq <- regex_or('(?:every|each|at|in the) (?:day|night|morning|evening)',
                    'daily', 'bd', 'nocte', 'mane', '[qt]\\.?d\\.?s\\.?',
                    '(?:once|twice|(?:up to )?{nums*}(?:-{nums*})? times) ?(?:daily|every day|(?:a|per|/) ?day)',
@@ -86,8 +104,10 @@ guess_number <- function(text) {
                        '{nums*} \\d-?\\d? (?:mls?|msl)(?= spoon)',
                        '{nums*}(?= a day)',
                        '{nums*} x \\d+\\.?\\d* (?:mls?|msl)',
-                       '^\\d(?:or|[.-])?\\d? {latin*}',
+                       '^\\d(?:or|[.-])?\\d?(?= {latin*})',
+                       '(?<={verb*} ){nums*}(?: ?(?:or|to|[-/])? ?{nums*})?(?= ?(?:{when}|{small}|{per_time_unit}))',
                        .sep = '|')
+
   number_matches <- stringr::str_extract_all(std_text, patterns, simplify = TRUE)
   longest_number <- apply(number_matches, 1, function(x) x[which.max(nchar(x))])
   output <- word2num(longest_number)
