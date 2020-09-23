@@ -69,23 +69,24 @@ sanitize_prescription <- function(x) {
 #' @importFrom glue glue
 #' @export
 guess_number <- function(text) {
+  # Might rename this to 'guess dosage' so it sounds less ambiguous
   std_text <- sanitize_prescription(text)
   std_text <- str_replace_all(std_text, '(apply|to be applied)( to the affected part)?', 'one')
   std_text <- str_replace_all(std_text, 'to be taken ', '')
   std_text <- str_replace_all(std_text, '\\(s\\)', '')
   nums <- dose_dict('numbers')
   latin <- dose_dict('latin')
-  freq <- glue::glue('(?:every|each|at|in the) (?:day|night|morning|evening)',
-                     'daily', 'bd', 'nocte', 'mane', '[qt]\\.?d\\.?s\\.?',
-                     '(?:once|twice|(?:up to )?(?:{nums})(?:-(?:{nums}))? times) ?(?:daily|every day|(?:a|per|/) ?day)',
-                     'p\\.?r\\.?n\\.?', '\\dhrly', 'every (?:{nums}|\\d-\\d+) h(?:ou)?rs?(?: when required)?',
-                     '(?:take )?(?:when|as) (?:directed|required|needed)',
-                     .sep = '|')
-  patterns <- glue::glue('(?:{nums})(?:(?: or |-)(?:{nums}))?(?= (?!hours?)(?:\\w+ )?(?:{freq}))',
-                         '(?:{nums}) \\d-?\\d? (?:mls?|msl)(?= spoon)',
-                         '(?:{nums})(?= a day)',
-                         '(?:{nums}) x \\d+\\.?\\d* (?:mls?|msl)',
-                         '^\\d(?:or|[.-])?\\d? (?:{latin})',
+  freq <- regex_or('(?:every|each|at|in the) (?:day|night|morning|evening)',
+                   'daily', 'bd', 'nocte', 'mane', '[qt]\\.?d\\.?s\\.?',
+                   '(?:once|twice|(?:up to )?{nums*}(?:-{nums*})? times) ?(?:daily|every day|(?:a|per|/) ?day)',
+                   'p\\.?r\\.?n\\.?', '\\dhrly', 'every (?:{nums*}|\\d-\\d+) h(?:ou)?rs?(?: when required)?',
+                   '(?:take )?(?:when|as) (?:directed|required|needed)',
+                   .sep = '|')
+  patterns <- glue::glue('{nums*}(?:(?: or |-){nums*})?(?= (?!hours?)(?:\\w+ )?{freq*})',
+                         '{nums*} \\d-?\\d? (?:mls?|msl)(?= spoon)',
+                         '{nums*}(?= a day)',
+                         '{nums*} x \\d+\\.?\\d* (?:mls?|msl)',
+                         '^\\d(?:or|[.-])?\\d? {latin*}',
                          .sep = '|')
   number_matches <- stringr::str_extract_all(std_text, patterns, simplify = TRUE)
   longest_number <- apply(number_matches, 1, function(x) x[which.max(nchar(x))])
@@ -105,7 +106,6 @@ guess_number <- function(text) {
 #'            old_max = common_dosages[1:1000, 'DF.MAX'],
 #'            new = unname(guess_frequency(common_dosages[1:1000, 'PRESCRIPTION'])))
 #' View(x)
-#' @importFrom glue glue
 #' @importFrom stringr str_extract_all
 #' @export
 guess_frequency <- function(text) {
@@ -116,33 +116,30 @@ guess_frequency <- function(text) {
   df_time_unit <- dose_dict('time_unit')
   df_every <- dose_dict('every')
   df_when <- dose_dict('when')
-  OR <- function(x) sprintf('(?:%s)', paste(x, collapse = '|'))
   df_timely <- dose_dict('timely')
   df_period <- dose_dict('period')
   nums <- dose_dict('numbers')
 
-  df_times <- glue::glue('once', 'twice', 'thrice', '(?:up ?)?(?:to )?{OR(nums)} times?', .sep = '|')
-  df_per_time_unit <- glue::glue(
-    '{OR(df_every)} {OR(nums)}(?: .)? {OR(df_time_unit)}',
-    '({OR(c(df_every, df_when))}(?: .)? )?{OR(df_period)}', ##
-    '{OR(df_when)} \\d{{1,4}}',
-    '{OR(df_times)}(?:(?: {OR(df_every)})? {OR(df_time_unit)})?',
+  df_times <- regex_or('once', 'twice', 'thrice', '(?:up ?)?(?:to )?{nums*} times?', .sep = '|')
+  df_per_time_unit <- regex_or(
+    '{df_every*} {nums*}(?: .)? {df_time_unit*}',
+    '(?:{df_every}|{df_when})((?: .)? )?{df_period*}', ##
+    '{df_when*} \\d{{1,4}}',
+    '{df_times*}(?:(?: {df_every*})? {df_time_unit*})?',
     .sep = '|'
   )
-  df_uber_number <- glue::glue('{OR(nums)}(?: (?:or|-|to|/))?(?: {OR(nums)})?')
+  df_uber_number <- regex_or('{nums*}(?: (?:or|-|to|/))?(?: {nums*})?')
 
   df_latin <- dose_dict('latin')
-  df_everyxunit <- glue::glue(
-    '{OR(df_every)} {OR(df_period)} {OR(df_per_time_unit)}'
-  )
+  df_everyxunit <- regex_or('{df_every*} {df_period*} {df_per_time_unit*}')
 
-  patterns <- glue::glue(
+  patterns <- regex_or(
     # are these ^ anchors necessary?
-    '(?<=^{df_uber_number} (?:x ?)?)(?:(?:\\d )?)(?:{df_timely}|{OR(df_latin)}|{df_everyxunit})',
-    '^{df_uber_number}(?= (?:x )?{OR(df_every)} {OR(df_time_unit)})', # doesn't seem right - l167 of frequency_phase.mixup - doesn't capture time unit.
+    '(?<=^{df_uber_number} (?:x ?)?)(?:(?:\\d )?)(?:{df_timely}|{df_latin*}|{df_everyxunit})',
+    '^{df_uber_number}(?= (?:x )?{df_every*} {df_time_unit*})', # doesn't seem right - l167 of frequency_phase.mixup - doesn't capture time unit.
     '^{df_uber_number} ms?ls? [ob]d',
-    '^{df_uber_number} {OR(df_per_time_unit)} {OR(df_uber_number)} {OR(df_per_time_unit)}',
-    '{OR(df_per_time_unit)}',
+    '^{df_uber_number} {df_per_time_unit*} {df_uber_number*} {df_per_time_unit*}',
+    '{df_per_time_unit*}',
     .sep = '|'
   )
   #message(patterns) # debug

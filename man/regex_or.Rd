@@ -21,7 +21,7 @@ Any expressions of the form \code{\{foo*\}} will be interpreted like
 }
 \examples{
 ntimes <- c('once', 'twice', 'thrice')
-regex_or('Take ({ntimes*}) per day')
+regex_or('Take {ntimes*} per day')
 
 words <- list(n = ntimes)
 regex_data_or(words, 'Take ({n*}) daily')

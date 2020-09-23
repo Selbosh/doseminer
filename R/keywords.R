@@ -71,5 +71,5 @@ dose_dict <- function(x) {
     if (missing(x))
       return(dictionary)
 
-    paste(dictionary[[x]], collapse = '|')
+    OR(dictionary[[x]])
 }

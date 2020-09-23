@@ -14,13 +14,12 @@
 #'   text = common_dosages[1:1000, 'PRESCRIPTION'],
 #'   old_min = common_dosages[1:1000, 'DN.MIN'],
 #'   old_max = common_dosages[1:1000, 'DN.MAX'],
-#'   dntxt = extract_dn_text(common_dosages[1:1000, 'PRESCRIPTION']),
+#'   dntxt = guess_number(common_dosages[1:1000, 'PRESCRIPTION']),
 #'   dose_num = convert_number_text(dntxt)
 #' )
 #'
 #' @importFrom stringr str_extract str_detect str_match
 #' @importFrom dplyr coalesce %>%
-#' @importFrom glue glue
 #'
 #' @export
 convert_number_text <- function(x) {
@@ -32,6 +31,7 @@ convert_number_text <- function(x) {
     avg[is.nan(avg)] <- NA
     as.character(avg)
   }
+  # replace the following with dose_dict
   int <- paste('one', 'two', 'three', 'four(?:teen)?', 'five',
                 'six(?:teen)?', 'seven(?:teen)?', 'eight(?:een)?',
                 'nine(?:teen)', 'ten', 'eleven', 'twelve', 'thirteen',
@@ -46,7 +46,7 @@ convert_number_text <- function(x) {
   meal <- paste('(?:main |evening )?meal', 'dinner', 'breakfast', 'lunch',
                 'supper', 'food', sep = '|')
   n_at_meal <-
-    glue::glue('(\\w+|\\d+.\\d+) (?:(?:{int}) times )?(?:{at}) (?:{mealtime})')
+    regex_or('(\\w+|\\d+.\\d+) (?:{int*} times )?{at*} {mealtime*}')
 
   units <- paste('capsules?', 'caps?', 'sachets?', 'dro?ps?', 'dr', 'ampoules?',
       'amps?', 'suppository?', 'pills?', 'blisters?', 'sprays?',
@@ -58,9 +58,9 @@ convert_number_text <- function(x) {
       'bolus(?:es)?', 'lo[sz]enges?', 'ounces?', 'pack(?:et)?s?',
       'units?', 'pastilles?', 'ounces?', sep = '|')
 
-  dose_unit <- glue::glue('(?:{nums}) ?(-|to|or) ?(?:{nums}) ?(?:{units})')
-  dose_unit_sng <- glue::glue('(?:{nums}) ?(-)? ?(?:{units})')
-  dose_unit_dbl <- glue::glue('(?:{dose_unit_sng}) ?(?:or|-|to) ?(?:{dose_unit_sng})')
+  dose_unit <- regex_or('{nums*} ?(-|to|or) ?{nums*} ?{units*}')
+  dose_unit_sng <- regex_or('{nums*} ?(-)? ?{units*}')
+  dose_unit_dbl <- regex_or('{dose_unit_sng*} ?(?:or|-|to) ?{dose_unit_sng*}')
 
   # development note:
   # name of column is the corresponding regex in word_digit_con.py
