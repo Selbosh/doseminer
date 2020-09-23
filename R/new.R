@@ -78,11 +78,14 @@ guess_number <- function(text) {
   nums <- dose_dict('numbers')
   latin <- dose_dict('latin')
   verb <- dose_dict('verb')
+  verb_past <- dose_dict('verb_past')
   when <- dose_dict('when')
   small <- dose_dict('small')
   every <- dose_dict('every')
   time_unit <- dose_dict('time_unit')
   period <- dose_dict('period')
+  unit <- dose_dict('unit')
+
   times <- regex_or('once', 'twice', 'thrice', '(?:up ?)?(?:to )?{nums*} times?', .sep = '|')
 
   per_time_unit <- regex_or(
@@ -106,6 +109,8 @@ guess_number <- function(text) {
                        '{nums*} x \\d+\\.?\\d* (?:mls?|msl)',
                        '^\\d(?:or|[.-])?\\d?(?= {latin*})',
                        '(?<={verb*} ){nums*}(?: ?(?:or|to|[-/])? ?{nums*})?(?= ?(?:{when}|{small}|{per_time_unit}))',
+                       '{nums*}(?: ?(?:or|to|[-/])? ?{nums*})?(?= {unit*})',
+                       '{nums*}(?= to be {verb_past*})',
                        .sep = '|')
 
   number_matches <- stringr::str_extract_all(std_text, patterns, simplify = TRUE)

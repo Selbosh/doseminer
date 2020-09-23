@@ -67,7 +67,9 @@ dose_dict <- function(x) {
         as_needed = c('p\\.?r\\.?n\\.?', 'pro re nata', 'sos', '(?:si opus )?sit',
                      'siop', '(?:as|if|when) (?:needed|required|reqd?|necessary)'),
         verb = c('put', 'take', 'insert', 'suck', 'inhale', 'use', 'instil', 'inject',
-                 'add', 'chew')
+                 'add', 'chew'),
+        verb_past = c('applied', 'sprayed', 'inserted', 'sucked', 'inhaled',
+                      'used', 'instilled', 'taken', 'chewed', 'injected', 'put')
     )
 
     if (missing(x))
