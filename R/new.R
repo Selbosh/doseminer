@@ -111,6 +111,9 @@ guess_number <- function(text) {
                        '(?<={verb*} ){nums*}(?: ?(?:or|to|[-/])? ?{nums*})?(?= ?(?:{when}|{small}|{per_time_unit}))',
                        '{nums*}(?: ?(?:or|to|[-/])? ?{nums*})?(?= {unit*})',
                        '{nums*}(?= to be {verb_past*})',
+                       '(?<=^to be )applied',
+                       '(?<=to be \\w{{1,10}} ){times*}', # quick fix. not sure about this one
+                       '(?<=^/{{0,2}} ?){nums*}(?: ?(?:or|to|[-/])? ?{nums*})?(?= (?:{when}|{every}) {period*})',
                        .sep = '|')
 
   number_matches <- stringr::str_extract_all(std_text, patterns, simplify = TRUE)

@@ -84,6 +84,7 @@ add_initialism_dots <- function(x) {
 word2num <- function(x) {
   digits <- c(once = 1, twice = 2, thrice = 3, a = 1,
               setNames(1:24, gsub('-', '', english::words(1:24))),
+              'half' = .5,
               od = 1,
               bd = 2, 'b. d' = 2, b.d. = 2, 'b. d.' = 2,
               t.d.s. = 3, t.d.s = 3, 't. d. s.' = 3, tds = 3,

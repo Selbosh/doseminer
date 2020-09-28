@@ -27,7 +27,7 @@ dose_dict <- function(x) {
         numbers = c('one', 'two', 'three', 'four(?:teen)?', 'five',
                     'six(?:teen)?', 'seven(?:teen)?', 'eight(?:een)?',
                     'nine(?:teen)', 'ten', 'eleven', 'twelve', 'thirteen',
-                    'fifteen', 'twenty', '\\d{1,5}\\.?\\d{0,5}'),
+                    'fifteen', 'twenty', '\\d{1,5}\\.?\\d{0,5}', '(?:a )?half'),
         unit = c('capsules?', 'caps?', 'sachets?', 'dro?ps?', 'dr', 'ampoules?',
                  'amps?', 'suppository?', 'pills?', 'blisters?', 'sprays?',
                  '(?<=[0-9] )spr', '(?<=[0-9] )suppos',
