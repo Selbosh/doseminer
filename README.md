@@ -1,6 +1,6 @@
 R package doseminer
 ================
-David SelbyBelay BirlieKatherine Dempsey
+David Selby, Belay Birlie and Katherine Dempsey
 
 <!-- badges: start -->
 
@@ -145,7 +145,7 @@ results
 | when required                                   |      |           |                   |           |
 | two every day                                   |      | 2         | every day         |           |
 | four times a day                                |      |           | four times a day  |           |
-| one in the morning                              |      | 1         | morning           |           |
+| one in the morning                              |      | 1         |                   |           |
 | two twice a day                                 |      | 2         | twice a day       |           |
 | take 1 or 2 4 times/day                         |      | 1 or 2    | 4 times           |           |
 | inhale 2 doses as needed                        |      | 2         |                   |           |
@@ -166,8 +166,8 @@ results
 | two puff twice a day                            | puff | 2         | twice a day       |           |
 | two four times a day                            |      | 2         | four times a day  |           |
 | take two daily                                  |      | 2         |                   |           |
-| 1 od                                            |      | 1 1       | od                |           |
-| 1 in the morning                                |      | 1         | morning           |           |
+| 1 od                                            |      | 1         | od                |           |
+| 1 in the morning                                |      | 1         |                   |           |
 | take one twice a day                            |      | 1         | twice a day       |           |
 
 </div>

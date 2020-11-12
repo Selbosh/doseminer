@@ -1,9 +1,6 @@
 ---
 title: R package doseminer
-author:
-  - David Selby
-  - Belay Birlie
-  - Katherine Dempsey
+author: David Selby, Belay Birlie and Katherine Dempsey
 output:
   github_document:
     df_print: kable

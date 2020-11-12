@@ -2,7 +2,7 @@
 % Please edit documentation in R/new.R
 \name{parse_frequency}
 \alias{parse_frequency}
-\title{Convert extracted into numeric daily frequency of dose}
+\title{Convert extracted frequency text into numeric daily frequency of dose}
 \usage{
 parse_frequency(string)
 }

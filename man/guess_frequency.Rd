@@ -7,16 +7,24 @@
 guess_frequency(text)
 }
 \description{
-Guess frequency of dose
+The frequency of dose means how many times, on 'dose day', that a dose
+should be administered. Even if there are several days between doses, and
+even if each actual dose contains multiple units. Thus 'two in the morning'
+is a frequency of 1 (because you take both at once). Similarly '1 weekly'
+is also a frequency of 1, because though there are gaps between dose days,
+on the day of the actual dose, one is administered.
 }
 \examples{
 guess_frequency(
 c('5 daily', 'four monthly', '5 q4h', 'two x3hly', 'take 1 weekly', # NB initial verb
   '3 / day', '2/week', '3x per day', 'five q2h', 'three am', 'one daily'))
 
-x <- data.frame(text = common_dosages[1:1000, 'PRESCRIPTION'],
+library(tibble)
+x <- tibble(text = common_dosages[1:1000, 'PRESCRIPTION'],
            old_min = common_dosages[1:1000, 'DF.MIN'],
            old_max = common_dosages[1:1000, 'DF.MAX'],
-           new = unname(guess_frequency(common_dosages[1:1000, 'PRESCRIPTION'])))
+           txt_freq = unname(guess_frequency(text)),
+           num_freq = parse_frequency(txt_freq)
+)
 View(x)
 }

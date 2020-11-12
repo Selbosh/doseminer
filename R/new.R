@@ -114,6 +114,7 @@ guess_number <- function(text) {
                        '(?<=^to be )applied',
                        '(?<=to be \\w{{1,10}} ){times*}', # quick fix. not sure about this one
                        '(?<=^/{{0,2}} ?){nums*}(?: ?(?:or|to|[-/])? ?{nums*})?(?= (?:{when}|{every}) {period*})',
+                       '(?<=^/{{0,2}} ?){every*} {nums*} {time_unit*}',
                        .sep = '|')
 
   number_matches <- stringr::str_extract_all(std_text, patterns, simplify = TRUE)
@@ -124,15 +125,25 @@ guess_number <- function(text) {
 
 #' Guess frequency of dose
 #'
+#' The frequency of dose means how many times, on 'dose day', that a dose
+#' should be administered. Even if there are several days between doses, and
+#' even if each actual dose contains multiple units. Thus 'two in the morning'
+#' is a frequency of 1 (because you take both at once). Similarly '1 weekly'
+#' is also a frequency of 1, because though there are gaps between dose days,
+#' on the day of the actual dose, one is administered.
+#'
 #' @examples
 #' guess_frequency(
 #' c('5 daily', 'four monthly', '5 q4h', 'two x3hly', 'take 1 weekly', # NB initial verb
 #'   '3 / day', '2/week', '3x per day', 'five q2h', 'three am', 'one daily'))
 #'
-#' x <- data.frame(text = common_dosages[1:1000, 'PRESCRIPTION'],
+#' library(tibble)
+#' x <- tibble(text = common_dosages[1:1000, 'PRESCRIPTION'],
 #'            old_min = common_dosages[1:1000, 'DF.MIN'],
 #'            old_max = common_dosages[1:1000, 'DF.MAX'],
-#'            new = unname(guess_frequency(common_dosages[1:1000, 'PRESCRIPTION'])))
+#'            txt_freq = unname(guess_frequency(text)),
+#'            num_freq = parse_frequency(txt_freq)
+#' )
 #' View(x)
 #' @importFrom stringr str_extract_all
 #' @export
@@ -168,6 +179,8 @@ guess_frequency <- function(text) {
     '^{df_uber_number} ms?ls? [ob]d',
     '^{df_uber_number} {df_per_time_unit*} {df_uber_number*} {df_per_time_unit*}',
     '{df_per_time_unit*}',
+    'daily|day|night|morn(?:ing)?|eve(?:ning)?|dly|at|per|bed|tea|bed ?time|dinner|mane|noct',
+    '{df_timely*}',
     .sep = '|'
   )
   #message(patterns) # debug
@@ -176,7 +189,7 @@ guess_frequency <- function(text) {
   setNames(longest, text)
 }
 
-#' Convert extracted into numeric daily frequency of dose
+#' Convert extracted frequency text into numeric daily frequency of dose
 #'
 #' Based on the script \code{freq_word_con.py} in original algorithm.
 #'
@@ -185,10 +198,20 @@ guess_frequency <- function(text) {
 #' @return Estimated (minimum and maximum) times per day dose is administered, as numeric value.
 #' @export
 parse_frequency <- function(string) {
+  # freq_word_con.py
   # 3 times per day
   # 3 times daily
   # 3 every day
   # interval is converted later, in conv_dose_interval.py and add_dose_interval.py
+  df_timely <- dose_dict('timely')
+  df_every <- dose_dict('every')
+  df_period <- dose_dict('period')
+  ifelse( # obviously this is wrong because it converts 'twice a day' => 1
+    stringr::str_detect(
+      string,
+      regex_or('{df_timely*}', '{df_every*} {df_period*}', .sep = '|')),
+    1,
+    NA)
 }
 
 #' Estimate the time between doses for a prescription.

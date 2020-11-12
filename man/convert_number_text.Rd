@@ -21,10 +21,10 @@ convert_number_text(c('6 once per day', 'take five', 'nothing here', NA,
 library(tibble)
 common_dosages <- read.csv('tests/common_doses_textmining.csv')
 x <- tibble(
-  text = common_dosages[1:1000, 'PRESCRIPTION'],
-  old_min = common_dosages[1:1000, 'DN.MIN'],
-  old_max = common_dosages[1:1000, 'DN.MAX'],
-  dntxt = guess_number(common_dosages[1:1000, 'PRESCRIPTION']),
+  text = common_dosages[1:5000, 'PRESCRIPTION'],
+  old_min = common_dosages[1:5000, 'DN.MIN'],
+  old_max = common_dosages[1:5000, 'DN.MAX'],
+  dntxt = guess_number(text),
   dose_num = convert_number_text(dntxt)
 )
 
