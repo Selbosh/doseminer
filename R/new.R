@@ -157,6 +157,7 @@ guess_frequency <- function(text) {
   df_when <- dose_dict('when')
   df_timely <- dose_dict('timely')
   df_period <- dose_dict('period')
+  as_needed <- dose_dict('as_needed')
   nums <- dose_dict('numbers')
 
   df_times <- regex_or('once', 'twice', 'thrice', '(?:up ?)?(?:to )?{nums*} times?', .sep = '|')
@@ -180,10 +181,14 @@ guess_frequency <- function(text) {
     '^{df_uber_number} {df_per_time_unit*} {df_uber_number*} {df_per_time_unit*}',
     '{df_per_time_unit*}',
     'daily|day|night|morn(?:ing)?|eve(?:ning)?|dly|at|per|bed|tea|bed ?time|dinner|mane|noct',
-    '{df_timely*}',
+    '(?:\\d{{1,2}} )?{df_timely*}',
+    '{df_latin*} ?$',
     .sep = '|'
   )
   #message(patterns) # debug
+  std_text <- stringr::str_remove_all(std_text, as_needed)
+  ## this should be a separate pre-processing step that simply flags up 'is optional' or not
+  std_test <- stringr::str_replace_all(std_text, '\\s+', ' ')
   matches <- stringr::str_extract_all(std_text, patterns, simplify = TRUE)
   longest <- apply(matches, 1, function(x) x[which.max(nchar(x))])
   setNames(longest, text)
