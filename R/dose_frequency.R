@@ -9,7 +9,9 @@
 #' @examples
 #' convert_freq_text(c('daily', 'twice a day', '6 hrly', NA, 'weekly',
 #' '1 - 2 a week', 'two to three wkly', 'every 2 weeks', '4 times weekly',
-#' '3 - 4 times monthly', '5 - 6 times a month'))
+#' '3 - 4 times monthly', '5 - 6 times a month', '3 a week', '4 times a week',
+#'  'two times at dinner', '1 before meals', 'one with each meal',
+#'  'at mealtimes', 'take before meals to control blood sugar'))
 #'
 #' library(tibble)
 #' common_dosages <- read.csv('tests/common_doses_textmining.csv')
@@ -29,9 +31,9 @@
 convert_freq_text <- function(x) {
   # The purpose of this function is to convert the extracted text from
   # guess_frequency into a numeric format
-  dbl_dose <- function(d) {
+  dbl_dose <- function(d, doseaggfun = mean) {
     d_num <- as.numeric(word2num(d[, 2]))
-    avg <- mean(d_num)
+    avg <- doseaggfun(d_num)
     avg[is.nan(avg)] <- NA
     as.character(avg)
   }
@@ -72,13 +74,16 @@ convert_freq_text <- function(x) {
   matches <- data.frame(
     na_week_month = ifelse(x %in% c('weekly', 'monthly', 'wkly', 'wk', 'in the week',
                                     'in a week', 'a week', 'wk', 'a month'),
-                            '?', NA), # not sure if this adds value
+                            '?', NA), # not sure if this adds value. especially if it overrides
     # per_week = ifelse(stringr::str_detect(x, 'w(?:ee)?k'),
     #                   x, NA),
 
     freq =
       stringr::str_match_all(x, '(\\w+) (?:-|or|to) (\\w+) (?:a|the|times)? ?(?:w(?:ee)?k|wly)') %>%
       vapply(function(d) {
+        # probably can replace this with str_match (not _all)
+        # if we are happy to accept only the first match.
+        # Should then turn these anonymous function(d)s into a named function.
         if (!length(d))
           return(NA_character_)
         d_num <- as.numeric(word2num(d[, -1]))
@@ -105,14 +110,34 @@ convert_freq_text <- function(x) {
         paste(as.numeric(word2num(d[-1])), collapse = '-')
       }),
 
-    a_month = # no need for these to be separate rules to weeks
+    a_month_or_week = # no need for these to be separate rules to weeks
       # unless we want to divide by 30 (7) each time, which original code
       # doesn't do (the /7 and /30 parts are commented out)
-      stringr::str_match(x, '(\\w+) times(?: a)? (?:m(?:on)?th)') %>%
-      apply(MARGIN = 1, function(d) word2num(d[2]))
+      stringr::str_match(x, '(\\w+) (?:a|the|/|times(?: (?:a|per|/))) (?:m(?:on)?th|w(?:ee)?k|wly)') %>%
+      apply(MARGIN = 1, function(d) word2num(d[2])), # ==> 1?
 
-    # every_n_months # see regex_every_month ==> 1
-    # every_n_weeks # see regex_every_week ==> 1
+    every_n_wk_mth =
+      ifelse(stringr::str_detect(x, '(?:every|each) \\w+ (?:m(?:on)?th|w(?:ee)?k)'),
+             '1', NA_character_), # does not yet capture 'every month' (i.e. no `n`)
+
+    between_meals =
+      ifelse(stringr::str_detect(x, regex_or('between meal')),
+             ifelse(stringr::str_detect(x, '(?: and (?:at|before) (?:bed|night))'), '3', '2'),
+             NA_character_),
+
+    at_every_meal =
+      ifelse(stringr::str_detect(x, regex_or('(?:{at}) meal')),
+             ifelse(stringr::str_detect(x, '(?: and (?:at|before) (?:bed|night))'), '4', '3'),
+             NA_character_)
+
+    # Still need these cases:
+    # - every morning
+    # - twice a day
+    # - three times a day
+    # - daily
+    # - 1 daily
+    # - between meals (= 2 times; but sometimes includes 'and at bedtime') - done
+    # - also handled contradictions, i.e. '3 times daily between meals' so the 'times daily' takes precedence
 
   )
   setNames(word2num(dplyr::coalesce(!!!matches)), x)

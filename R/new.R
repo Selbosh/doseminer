@@ -175,6 +175,9 @@ guess_frequency <- function(text) {
   df_latin <- dose_dict('latin')
   df_everyxunit <- regex_or('{df_every*} {df_period*} {df_per_time_unit*}')
 
+  at <- paste('each', 'every', 'an?', 'in', 'at', 'per', 'during', 'after',
+              'before', 'with', sep = '|')
+
   patterns <- regex_or(
     # are these ^ anchors necessary?
     '(?<=^{df_uber_number} (?:x ?)?)(?:(?:\\d )?)(?:{df_timely}|{df_latin*}|{df_everyxunit})',
@@ -185,6 +188,8 @@ guess_frequency <- function(text) {
     'daily|day|night|morn(?:ing)?|eve(?:ning)?|dly|at|per|bed|tea|bed ?time|dinner|mane|noct',
     '(?:\\d{{1,2}} )?{df_timely*}',
     '{df_latin*} ?$',
+    '{df_uber_number} times? daily',
+    '(?:{at*}|between) meal(?: ?time)?s?(?: and (?:at|before) (?:bed|night))?',
     .sep = '|'
   )
   #message(patterns) # debug

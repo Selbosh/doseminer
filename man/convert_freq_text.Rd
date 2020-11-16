@@ -19,7 +19,9 @@ Convert daily frequency text into numeric form
 \examples{
 convert_freq_text(c('daily', 'twice a day', '6 hrly', NA, 'weekly',
 '1 - 2 a week', 'two to three wkly', 'every 2 weeks', '4 times weekly',
-'3 - 4 times monthly', '5 - 6 times a month'))
+'3 - 4 times monthly', '5 - 6 times a month', '3 a week', '4 times a week',
+ 'two times at dinner', '1 before meals', 'one with each meal',
+ 'at mealtimes', 'take before meals to control blood sugar'))
 
 library(tibble)
 common_dosages <- read.csv('tests/common_doses_textmining.csv')

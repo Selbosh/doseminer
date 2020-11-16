@@ -25,9 +25,9 @@
 convert_number_text <- function(x) {
   # The purpose of this function is to convert the extracted text from
   # guess_dose_number into a numeric format
-  dbl_dose <- function(d) {
+  dbl_dose <- function(d, doseaggfun = mean) {
     d_num <- as.numeric(word2num(d[, 2]))
-    avg <- mean(d_num)
+    avg <- FUN(d_num)
     avg[is.nan(avg)] <- NA
     as.character(avg)
   }
