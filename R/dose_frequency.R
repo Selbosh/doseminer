@@ -122,12 +122,12 @@ convert_freq_text <- function(x) {
 
     between_meals =
       ifelse(stringr::str_detect(x, regex_or('between meal')),
-             ifelse(stringr::str_detect(x, '(?: and (?:at|before) (?:bed|night))'), '3', '2'),
+             as.character(2 + stringr::str_detect(x, '(?: and (?:at|before) (?:bed|night))')),
              NA_character_),
 
     at_every_meal =
       ifelse(stringr::str_detect(x, regex_or('(?:{at}) meal')),
-             ifelse(stringr::str_detect(x, '(?: and (?:at|before) (?:bed|night))'), '4', '3'),
+             as.character(3 + stringr::str_detect(x, '(?: and (?:at|before) (?:bed|night))')),
              NA_character_)
 
     # Still need these cases:
