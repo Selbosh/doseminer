@@ -25,7 +25,7 @@
 #' )
 #'
 #' @importFrom stringr str_extract str_detect str_match
-#' @importFrom dplyr coalesce %>%
+#' @importFrom dplyr coalesce %>% if_else
 #'
 #' @export
 convert_freq_text <- function(x) {
@@ -72,9 +72,9 @@ convert_freq_text <- function(x) {
   # development note:
   # name of column is the corresponding regex in freq_word_con.py
   matches <- data.frame(
-    na_week_month = ifelse(x %in% c('weekly', 'monthly', 'wkly', 'wk', 'in the week',
+    na_week_month = if_else(x %in% c('weekly', 'monthly', 'wkly', 'wk', 'in the week',
                                     'in a week', 'a week', 'wk', 'a month'),
-                            '?', NA), # not sure if this adds value. especially if it overrides
+                            '?', NA_character_), # not sure if this adds value. especially if it overrides
     # per_week = ifelse(stringr::str_detect(x, 'w(?:ee)?k'),
     #                   x, NA),
 
@@ -91,8 +91,8 @@ convert_freq_text <- function(x) {
       }, character(1)),
 
     every_week =
-      ifelse(stringr::str_detect(x, '(?:every|each) (\\w+) (?:w(?:ee)k)'),
-             '1', NA), # inconsistent with 'matches' rule above?
+      if_else(stringr::str_detect(x, '(?:every|each) (\\w+) (?:w(?:ee)k)'),
+             '1', NA_character_), # inconsistent with 'matches' rule above?
 
     times_a_week =
       stringr::str_match(x, '(\\w+) times(?: a)? (?:w(?:ee)?k|wly)') %>%
@@ -117,18 +117,28 @@ convert_freq_text <- function(x) {
       apply(MARGIN = 1, function(d) word2num(d[2])), # ==> 1?
 
     every_n_wk_mth =
-      ifelse(stringr::str_detect(x, '(?:every|each) \\w+ (?:m(?:on)?th|w(?:ee)?k)'),
+      if_else(stringr::str_detect(x, '(?:every|each) \\w+ (?:m(?:on)?th|w(?:ee)?k)'),
              '1', NA_character_), # does not yet capture 'every month' (i.e. no `n`)
 
     between_meals =
-      ifelse(stringr::str_detect(x, regex_or('between meal')),
+      if_else(stringr::str_detect(x, regex_or('between meal')),
              as.character(2 + stringr::str_detect(x, '(?: and (?:at|before) (?:bed|night))')),
              NA_character_),
 
     at_every_meal =
-      ifelse(stringr::str_detect(x, regex_or('(?:{at}) meal')),
+      if_else(stringr::str_detect(x, regex_or('(?:{at}) meal')),
              as.character(3 + stringr::str_detect(x, '(?: and (?:at|before) (?:bed|night))')),
-             NA_character_)
+             NA_character_),
+
+    daily =
+      if_else(x == 'daily', '1', NA_character_),
+
+    once_twice_thrice =
+      if_else(x %in% c('once', 'twice', 'thrice'), word2num(x), NA_character_),
+
+    n_times_daily =
+      stringr::str_match(x, regex_or('({nums}) times')) %>%
+      apply(MARGIN = 1, function(d) word2num(d[2]))
 
     # Still need these cases:
     # - every morning
@@ -138,6 +148,7 @@ convert_freq_text <- function(x) {
     # - 1 daily
     # - between meals (= 2 times; but sometimes includes 'and at bedtime') - done
     # - also handled contradictions, i.e. '3 times daily between meals' so the 'times daily' takes precedence
+    # - 3-4 times daily; 3 or 4 times daily; 2 to 3 times daily
 
   )
   setNames(word2num(dplyr::coalesce(!!!matches)), x)

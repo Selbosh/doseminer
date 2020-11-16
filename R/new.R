@@ -53,8 +53,8 @@ sanitize_prescription <- function(x) {
     stringr::str_replace_all('([a-z]+)([0-9]+)([a-z]+)', '\\1 \\2 \\3') %>%
     stringr::str_replace_all('(\\bq) ([1-8]) ([dh])', '\\1\\2\\3') %>% # preserve 'q1h'
     stringr::str_replace_all(unit_pattern, '\\1 \\2 \\3 \\4') %>%
-    stringr::str_replace_all('weekly disp(?:ens(?:ed?|ing))?', ' ') %>%
-    stringr::str_replace_all('disp(?:ens(?:ed?|ing))? weekly', ' ') %>%
+    stringr::str_replace_all('weekly (?:script|disp(?:en[sc](?:ed?|ing))?)', '') %>%
+    stringr::str_replace_all('(?:script|disp(?:en[sc](?:ed?|ing))?) weekly', '') %>%
     stringr::str_replace_all('\\s+', ' ')
 }
 
