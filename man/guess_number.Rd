@@ -10,8 +10,9 @@ guess_number(text)
 Seeing if we can do better than original without copying over code.
 }
 \examples{
-x <- data.frame(text = common_dosages[1:1000, 'PRESCRIPTION'],
-           old_min = common_dosages[1:1000, 'DN.MIN'],
-           old_max = common_dosages[1:1000, 'DN.MAX'],
-           new = unname(guess_number(common_dosages[1:1000, 'PRESCRIPTION'])))
+n <- 5000
+x <- data.frame(text = common_dosages[1:n, 'PRESCRIPTION'],
+           old_min = common_dosages[1:n, 'DN.MIN'],
+           old_max = common_dosages[1:n, 'DN.MAX'],
+           new = unname(guess_number(common_dosages[1:n, 'PRESCRIPTION'])))
 }

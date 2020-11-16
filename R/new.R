@@ -61,10 +61,11 @@ sanitize_prescription <- function(x) {
 #' Seeing if we can do better than original without copying over code.
 #'
 #' @examples
-#' x <- data.frame(text = common_dosages[1:1000, 'PRESCRIPTION'],
-#'            old_min = common_dosages[1:1000, 'DN.MIN'],
-#'            old_max = common_dosages[1:1000, 'DN.MAX'],
-#'            new = unname(guess_number(common_dosages[1:1000, 'PRESCRIPTION'])))
+#' n <- 5000
+#' x <- data.frame(text = common_dosages[1:n, 'PRESCRIPTION'],
+#'            old_min = common_dosages[1:n, 'DN.MIN'],
+#'            old_max = common_dosages[1:n, 'DN.MAX'],
+#'            new = unname(guess_number(common_dosages[1:n, 'PRESCRIPTION'])))
 #' @importFrom stringr str_replace_all str_extract_all
 #' @importFrom glue glue
 #' @export
@@ -138,9 +139,10 @@ guess_number <- function(text) {
 #'   '3 / day', '2/week', '3x per day', 'five q2h', 'three am', 'one daily'))
 #'
 #' library(tibble)
-#' x <- tibble(text = common_dosages[1:1000, 'PRESCRIPTION'],
-#'            old_min = common_dosages[1:1000, 'DF.MIN'],
-#'            old_max = common_dosages[1:1000, 'DF.MAX'],
+#' n <- 5000
+#' x <- tibble(text = common_dosages[1:n, 'PRESCRIPTION'],
+#'            old_min = common_dosages[1:n, 'DF.MIN'],
+#'            old_max = common_dosages[1:n, 'DF.MAX'],
 #'            txt_freq = unname(guess_frequency(text)),
 #'            num_freq = parse_frequency(txt_freq)
 #' )

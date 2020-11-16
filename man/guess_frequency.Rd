@@ -20,9 +20,10 @@ c('5 daily', 'four monthly', '5 q4h', 'two x3hly', 'take 1 weekly', # NB initial
   '3 / day', '2/week', '3x per day', 'five q2h', 'three am', 'one daily'))
 
 library(tibble)
-x <- tibble(text = common_dosages[1:1000, 'PRESCRIPTION'],
-           old_min = common_dosages[1:1000, 'DF.MIN'],
-           old_max = common_dosages[1:1000, 'DF.MAX'],
+n <- 5000
+x <- tibble(text = common_dosages[1:n, 'PRESCRIPTION'],
+           old_min = common_dosages[1:n, 'DF.MIN'],
+           old_max = common_dosages[1:n, 'DF.MAX'],
            txt_freq = unname(guess_frequency(text)),
            num_freq = parse_frequency(txt_freq)
 )
