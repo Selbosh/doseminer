@@ -53,6 +53,8 @@ sanitize_prescription <- function(x) {
     stringr::str_replace_all('([a-z]+)([0-9]+)([a-z]+)', '\\1 \\2 \\3') %>%
     stringr::str_replace_all('(\\bq) ([1-8]) ([dh])', '\\1\\2\\3') %>% # preserve 'q1h'
     stringr::str_replace_all(unit_pattern, '\\1 \\2 \\3 \\4') %>%
+    stringr::str_replace_all('weekly disp(?:ens(?:ed?|ing))?', ' ') %>%
+    stringr::str_replace_all('disp(?:ens(?:ed?|ing))? weekly', ' ') %>%
     stringr::str_replace_all('\\s+', ' ')
 }
 
@@ -186,6 +188,7 @@ guess_frequency <- function(text) {
     '^{df_uber_number} {df_per_time_unit*} {df_uber_number*} {df_per_time_unit*}',
     '{df_per_time_unit*}',
     'daily|day|night|morn(?:ing)?|eve(?:ning)?|dly|at|per|bed|tea|bed ?time|dinner|mane|noct',
+    '(?:once|twice|thrice) daily',
     '(?:\\d{{1,2}} )?{df_timely*}',
     '{df_latin*} ?$',
     '{df_uber_number} times? daily',
@@ -199,31 +202,6 @@ guess_frequency <- function(text) {
   matches <- stringr::str_extract_all(std_text, patterns, simplify = TRUE)
   longest <- apply(matches, 1, function(x) x[which.max(nchar(x))])
   setNames(longest, text)
-}
-
-#' Convert extracted frequency text into numeric daily frequency of dose
-#'
-#' Based on the script \code{freq_word_con.py} in original algorithm.
-#'
-#' @param string Text extracted by \code{\link{guess_frequency}} (probably should rename this \code{extract_} or \code{match_})
-#'
-#' @return Estimated (minimum and maximum) times per day dose is administered, as numeric value.
-#' @export
-parse_frequency <- function(string) {
-  # freq_word_con.py
-  # 3 times per day
-  # 3 times daily
-  # 3 every day
-  # interval is converted later, in conv_dose_interval.py and add_dose_interval.py
-  df_timely <- dose_dict('timely')
-  df_every <- dose_dict('every')
-  df_period <- dose_dict('period')
-  ifelse( # obviously this is wrong because it converts 'twice a day' => 1
-    stringr::str_detect(
-      string,
-      regex_or('{df_timely*}', '{df_every*} {df_period*}', .sep = '|')),
-    1,
-    NA)
 }
 
 #' Estimate the time between doses for a prescription.
