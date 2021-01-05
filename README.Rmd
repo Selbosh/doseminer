@@ -9,6 +9,8 @@ output:
 <!-- badges: start -->
 <!-- badges: end -->
 
+**Redesign analysis to extract and strip text sequentially. Based on the assumption that, e.g. frequency and dose number are disjoint**
+
 An R implementation of George Karystianis's text mining algorithm for extracting
 drug dosage information from CPRD prescription data.
 The aim of this project is to provide a complete replacement for the algorithm,

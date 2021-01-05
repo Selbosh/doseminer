@@ -75,6 +75,6 @@ dose_dict <- function(x) {
     if (missing(x))
       return(dictionary)
 
-    x <- as.character(substitute(x))
+    x <- deparse(substitute(x))
     OR(dictionary[[x]])
 }
