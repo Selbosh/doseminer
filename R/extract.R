@@ -20,7 +20,8 @@ example_prescriptions <- c(
   'every 72 hours',
   '1 x 5 ml spoon 4 / day for 10 days',
   'two to three times a day',
-  'three times a week')
+  'three times a week',
+  'three 5ml spoonsful to be taken four times a day after food')
 
 #' Clean up raw prescription freetext
 #'
@@ -95,6 +96,12 @@ weekly_to_daily <- function(Dperweek) {
     paste('every', min, '-', max, 'days')
 }
 
+#' @importFrom stringr str_replace
+multiply_dose <- function(axb) {
+  expr <- str_replace(axb, '(\\d+[.]?\\d*) x (\\d+[.]?\\d*)', '\\1 * \\2')
+  eval(parse(text = expr))
+}
+
 #' Extract dose frequency information from freetext prescription
 #'
 #' @param txt A character vector of freetext prescriptions
@@ -124,7 +131,9 @@ extract_dose_frequency_interval <- function(txt) {
     str_replace_all('(every )?(on )?alt(ernate)? (day|night|morning)s?|every (other|second) day',
                     'every 2 days') %>%
     str_replace_all('every third (day|night|morning)', 'every 3 days') %>%
-    str_replace_all('[0-9]+ / week', weekly_to_daily)
+    str_replace_all('[0-9]+ / week', weekly_to_daily) %>%
+    # Convert phrases like "one 5 ml spoonful" to "1 x 5 ml spoonful"
+    str_replace_all('(\\d+[.]?\\d*) (\\d+[.]?\\d* ml spoon)', '\\1 x \\2')
 
   # NOTE: only retrieves first match.
   freq <- str_extract(
@@ -151,7 +160,9 @@ extract_dose_frequency_interval <- function(txt) {
     output, sprintf('^%s(?: (?:%s))?|%s(?: (?:%s)|$)',
                     numeric_range, paste(drug_units, collapse = '|'),
                     numeric_range, paste(drug_units, collapse = '|'))
-  )
+  ) %>%
+    # Convert doses like "a x b" to the arithmetic result a*b.
+    str_replace_all('\\d+[.]?\\d* x \\d+[.]?\\d*', multiply_dose)
 
   data.frame(raw = txt, output, freq, itvl, dose)
 }

@@ -5,7 +5,7 @@
 \alias{example_prescriptions}
 \title{Example freetext prescriptions}
 \format{
-An object of class \code{character} of length 17.
+An object of class \code{character} of length 18.
 }
 \usage{
 example_prescriptions
