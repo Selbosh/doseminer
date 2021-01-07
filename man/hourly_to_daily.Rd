@@ -4,7 +4,7 @@
 \alias{hourly_to_daily}
 \title{Convert hourly to daily frequency}
 \usage{
-hourly_to_daily(everyDhours)
+hourly_to_daily(everyDhrs)
 }
 \description{
 Convert hourly to daily frequency

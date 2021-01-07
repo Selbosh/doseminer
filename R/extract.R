@@ -79,10 +79,20 @@ clean_prescription_text <- function(txt) {
 #' hourly_to_daily('every 4 hours')
 #'
 #' @importFrom stringr str_extract
-hourly_to_daily <- function(everyDhours) {
-  n <- as.numeric(str_extract(everyDhours, '\\d+'))
+hourly_to_daily <- function(everyDhrs) {
+  n <- as.numeric(str_extract(everyDhrs, '\\d+'))
   if (n >= 24) return(paste('every', n / 24, 'days'))
   paste(24 / n, '/ day')
+}
+
+weekly_to_daily <- function(Dperweek) {
+  n <- 7 / as.numeric(str_extract(Dperweek, '\\d+'))
+  min <- floor(n)
+  max <- ceiling(n)
+  if (min == max) {
+    paste('every', n, 'days')
+  } else
+    paste('every', min, '-', max, 'days')
 }
 
 #' Extract dose frequency information from freetext prescription
@@ -113,13 +123,16 @@ extract_dose_frequency_interval <- function(txt) {
     str_replace_all('(?:every|per) week|weekly', 'every 7 days') %>%
     str_replace_all('(every )?(on )?alt(ernate)? (day|night|morning)s?|every (other|second) day',
                     'every 2 days') %>%
-    str_replace_all('every third (day|night|morning)', 'every 3 days')
+    str_replace_all('every third (day|night|morning)', 'every 3 days') %>%
+    str_replace_all('[0-9]+ / week', weekly_to_daily)
 
   # NOTE: only retrieves first match.
   freq <- str_extract(
-    processed, '(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d*(?= / day)')
+    processed, '(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d*(?= / day)') %>%
+    str_remove_all(' ')
   itvl <- str_extract(
-    processed, '(?<=every )(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d*(?= days)')
+    processed, '(?<=every )(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d*(?= days)') %>%
+    str_remove_all(' ')
 
   # If freq specified but not interval (or vice versa) then implicit = 1.
   # (This may be a risky assumption.)
@@ -128,14 +141,17 @@ extract_dose_frequency_interval <- function(txt) {
 
   # Note: only removes first match.
   output <- processed %>%
-    str_remove('(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d* / day') %>%
+    str_remove('(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d* / (?:day|week)') %>%
     str_remove('every (?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d* days') %>%
     str_squish
 
-  dose <-
-    str_extract(output,
-                sprintf('\\d+[.]?\\d*(?: (?:x|-) \\d+[.]?\\d*)?(?: (?:%s)|$)',
-                        paste(drug_units, collapse = '|')))
+  numeric_range <- '\\d+[.]?\\d*(?: (?:x|-) \\d+[.]?\\d*)?'
+
+  dose <- str_extract(
+    output, sprintf('^%s(?: (?:%s))?|%s(?: (?:%s)|$)',
+                    numeric_range, paste(drug_units, collapse = '|'),
+                    numeric_range, paste(drug_units, collapse = '|'))
+  )
 
   data.frame(raw = txt, output, freq, itvl, dose)
 }
