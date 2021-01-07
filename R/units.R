@@ -28,7 +28,7 @@ drug_units <- c(
   `blisters?` = "blister",
   `spr(?:ays?)?\\b` = "spray",
   `mic(?:ro)? ?g(?:rams?)?|mcgs?|ug` = "microgram",
-  `n(?:an)?g|nano ?grams?` = "nanogram",
+  `\\bn(?:an)?g|nano ?grams?` = "nanogram",
   `suppository?|(?<=[0-9] )suppos` = "suppository",
   `vials?` = "vial", `patch(?:es)?` = "patch",
   `ounces?|oz` = "ounce",

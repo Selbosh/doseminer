@@ -21,7 +21,10 @@ example_prescriptions <- c(
   '1 x 5 ml spoon 4 / day for 10 days',
   'two to three times a day',
   'three times a week',
-  'three 5ml spoonsful to be taken four times a day after food')
+  'three 5ml spoonsful to be taken four times a day after food',
+  'take one or two every 4-6 hrs',
+  '5ml 3 hrly when required',
+  'one every morning to reduce bp')
 
 #' Clean up raw prescription freetext
 #'
@@ -118,7 +121,7 @@ extract_dose_frequency_interval <- function(txt) {
     # Translate from Latin to English.
     str_replace_all(latin_medical_terms) %>%
     # Invert hourly intervals to daily rates.
-    str_replace_all('every \\d+ h(?:ou)?r?s?', hourly_to_daily) %>%
+    str_replace_all('every \\d+ h(?:ou)?r?s?|\\d h(?:(?:ou)?r)?ly', hourly_to_daily) %>%
     # once, twice, thrice -> n times
     str_replace_all(setNames(paste(1:3, 'times'),
                              c('once', 'twice', 'thrice'))) %>%
@@ -142,6 +145,8 @@ extract_dose_frequency_interval <- function(txt) {
   itvl <- str_extract(
     processed, '(?<=every )(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d*(?= days)') %>%
     str_remove_all(' ')
+  optional <-
+    str_detect(processed, '(?:as|when|if) (?:req(?:uire)?d|ne(?:eded|cessary))')
 
   # If freq specified but not interval (or vice versa) then implicit = 1.
   # (This may be a risky assumption.)
@@ -152,6 +157,7 @@ extract_dose_frequency_interval <- function(txt) {
   output <- processed %>%
     str_remove('(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d* / (?:day|week)') %>%
     str_remove('every (?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d* days') %>%
+    str_remove('(?:as|when|if) (?:req(?:uire)?d|ne(?:eded|cessary))') %>%
     str_squish
 
   numeric_range <- '\\d+[.]?\\d*(?: (?:x|-) \\d+[.]?\\d*)?'
@@ -164,7 +170,7 @@ extract_dose_frequency_interval <- function(txt) {
     # Convert doses like "a x b" to the arithmetic result a*b.
     str_replace_all('\\d+[.]?\\d* x \\d+[.]?\\d*', multiply_dose)
 
-  data.frame(raw = txt, output, freq, itvl, dose)
+  data.frame(raw = txt, output, freq, itvl, dose, optional)
 }
 
 #' Extract units of dose from freetext prescriptions.

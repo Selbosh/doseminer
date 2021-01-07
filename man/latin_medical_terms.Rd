@@ -5,7 +5,7 @@
 \alias{latin_medical_terms}
 \title{List of Latin medical and pharmaceutical abbreviations}
 \format{
-An object of class \code{character} of length 42.
+An object of class \code{character} of length 45.
 }
 \source{
 \url{https://en.wikipedia.org/wiki/List_of_abbreviations_used_in_medical_prescriptions}
