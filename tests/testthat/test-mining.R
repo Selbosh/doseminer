@@ -23,3 +23,13 @@ examples <- c(
 test_that('2 + 2 = 4', {
   expect_equal(2 + 2, 4)
 })
+
+test_that('"every other day" => daily interval of 2' {
+  expect_equivalent(daily_interval('every other day'), 2)
+  expect_equivalent(daily_interval('every 3 days'), 3)
+  expect_equivalent(daily_interval('twice a week'), 3.5) # later convert fractional intervals into c(floor, ceiling)
+  expect_equivalent(daily_interval('three times a week'), 2.33)
+  expect_equivalent(daily_interval('every week'), 7)
+  expect_equivalent(daily_interval('every other week'), 14)
+  expect_equivalent(daily_interval('dieb alt wk'), 14)
+})

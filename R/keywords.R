@@ -1,3 +1,4 @@
+## DEPRECATED
 #' Dictionary of useful patterns for text mining prescriptions
 #'
 #' @param x Name of category of keywords. If missing, returns whole dictionary
