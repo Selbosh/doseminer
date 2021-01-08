@@ -67,55 +67,18 @@ clean_prescription_text <- function(txt) {
     str_squish
 }
 
-# Rather than try to match every possible variant, the first pass should
-# simplify the text, then the rules for pattern matching can be much simpler.
-# For example, rather than try to match mg, mgs, milligram, milligrams etc.
-# we will first standardise the text so it ALWAYS says mg if any thing is found
-# Even better: we could replace all units with "unit" so following regexes
-# can treat all units the same (once we've extracted unit).
-
-# uber_number <- '\\d{1,5}\\.?\\d{0,5}(?: or| to| [/-])?(?: \\d{1,5}\\.?\\d{0,5})?'
-#latin_nums <- paste(names(latin2intdaily(T)), collapse = '|')
-
-#' Convert hourly to daily frequency
-#'
-#' @examples
-#' hourly_to_daily('every 4 hours')
-#'
-#' @importFrom stringr str_extract
-hourly_to_daily <- function(everyDhrs) {
-  n <- as.numeric(str_extract(everyDhrs, '\\d+'))
-  if (n >= 24) return(paste('every', n / 24, 'days'))
-  paste(24 / n, '/ day')
-}
-
-weekly_to_daily <- function(Dperweek) {
-  n <- 7 / as.numeric(str_extract(Dperweek, '\\d+'))
-  min <- floor(n)
-  max <- ceiling(n)
-  if (min == max) {
-    paste('every', n, 'days')
-  } else
-    paste('every', min, '-', max, 'days')
-}
-
-#' @importFrom stringr str_replace
-multiply_dose <- function(axb) {
-  expr <- str_replace(axb, '(\\d+[.]?\\d*) x (\\d+[.]?\\d*)', '\\1 * \\2')
-  eval(parse(text = expr))
-}
-
 #' Extract dose frequency information from freetext prescription
+#'
+#' This is the main workhorse function for the \code{doseminer} package.
 #'
 #' @param txt A character vector of freetext prescriptions
 #'
 #' @examples
-#' extract_dose_frequency_interval(example_prescriptions)
+#' extract_from_prescription(example_prescriptions)
 #'
-#' @import magrittr
-#' @import stringr
+#' @import magrittr stringr
 #' @export
-extract_dose_frequency_interval <- function(txt) {
+extract_from_prescription <- function(txt) {
   processed <- clean_prescription_text(txt) %>%
     str_replace_all('times(/| a| per) ?', '/ ') %>%
     # Translate from Latin to English.
@@ -145,7 +108,7 @@ extract_dose_frequency_interval <- function(txt) {
   itvl <- str_extract(
     processed, '(?<=every )(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d*(?= days)') %>%
     str_remove_all(' ')
-  optional <-
+  optional <- 1L *
     str_detect(processed, '(?:as|when|if) (?:req(?:uire)?d|ne(?:eded|cessary))')
 
   # If freq specified but not interval (or vice versa) then implicit = 1.
@@ -168,68 +131,38 @@ extract_dose_frequency_interval <- function(txt) {
                     numeric_range, paste(drug_units, collapse = '|'))
   ) %>%
     # Convert doses like "a x b" to the arithmetic result a*b.
-    str_replace_all('\\d+[.]?\\d* x \\d+[.]?\\d*', multiply_dose)
+    str_replace_all('\\d+[.]?\\d* x \\d+[.]?\\d*', multiply_dose) %>%
+    str_extract(numeric_range) %>%
+    str_remove_all(' ')
 
-  data.frame(raw = txt, output, freq, itvl, dose, optional)
+  unit <- extract_dose_unit(output)
+
+  data.frame(raw = txt, output, freq, itvl, dose, unit, optional)
 }
 
-#' Extract units of dose from freetext prescriptions.
-#'
-#' If there are multiple units in a string, only the first is returned.
-#'
-#' @param txt a character vector
-#'
-#' @return A character vector the same length as \code{txt}, containing
-#' standardised units, or \code{NA} if no units were found in the prescription.
+#' Convert hourly to daily frequency
 #'
 #' @examples
-#' extract_dose_unit(example_prescriptions)
+#' hourly_to_daily('every 4 hours')
 #'
-#' Based on \code{add_dose_unit.py} from original Python/Java algorithm.
-#'
-#' @importFrom stringr str_replace_all str_extract
-extract_dose_unit <- function(txt) {
-  standardised <- stringr::str_replace_all(txt, drug_units)
-  stringr::str_extract(standardised, paste(drug_units, collapse = '|'))
+#' @importFrom stringr str_extract
+hourly_to_daily <- function(everyDhrs) {
+  n <- as.numeric(str_extract(everyDhrs, '\\d+'))
+  if (n >= 24) return(paste('every', n / 24, 'days'))
+  paste(24 / n, '/ day')
 }
 
-# examples %>%
-#   extract_frequency_text %>%
-#   cbind(extract_interval_text(.$freq_extracted)) %>%
-#   transform(unit = extract_unit_text(int_extracted))
-
-#' @import stringr
-extract_dose_number <- function(txt) {
-  # TODO: complicated expressions like "1 - 2 5 ml spoonsful"
-  txt %>%
-    str_extract_all(
-      paste(sep = '|',
-            '\\d+\\.?\\d*(?: - \\d)? \\d+ mls? spoon', # spoons
-            '\\d+\\.?\\d* x \\d\\.?\\d*(?= \\w+)',
-            '(?<=\\w{1,10} )\\d+( ?[.-] ?)?\\d*$',
-            '^\\d+( ?[.-] ?)?\\d*',
-            '(?<=^\\w{1,10} )\\d+( ?[.-] ?)?\\d*'),
-      simplify = TRUE) %>%
-    apply(1, function(x) x[which.max(nchar(x))]) %>%
-    str_replace_all(' (x|-) ', '\\1') %>%
-    str_remove_all('-$| mls? spoon') %>%
-    # Advanced: convert "x - y" to "c(x, y)" and "a x b" or "a b" to "a * b".
-    str_replace_all('(\\d+\\.?\\d*)-(\\d+\\.?\\d*)', 'c(\\1,\\2)') %>%
-    # Evaluate the expression generated.
-    trimws %>% str_replace_all('[ x]', '*') -> expr
-  # Must return a list to include the min/max values.
-  lapply(expr, function(x) eval(parse(text = x)))
+#' Convert weekly interval to daily interval
+#'
+#' @examples
+#' weekly_to_daily('3 / week')
+#'
+#' @importFrom stringr str_extract
+weekly_to_daily <- function(Dperweek) {
+  n <- 7 / as.numeric(str_extract(Dperweek, '\\d+'))
+  min <- floor(n)
+  max <- ceiling(n)
+  if (min == max) {
+    paste('every', n, 'days')
+  } else paste('every', min, '-', max, 'days')
 }
-
-# examples %>%
-#   extract_frequency_text %>%
-#   cbind(extract_interval_text(.$freq_extracted)) %>%
-#   transform(unit = extract_unit_text(int_extracted),
-#             number = extract_dose_number(int_extracted))
-#
-# sample(common_dosages$PRESCRIPTION, 1000) %>%
-#   extract_frequency_text %>%
-#   cbind(extract_interval_text(.$freq_extracted)) %>%
-#   dplyr::mutate(unit = extract_unit_text(int_extracted),
-#                 number = extract_dose_number(int_extracted)) %>%
-#   View

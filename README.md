@@ -1,9 +1,8 @@
 R package doseminer
 ================
-David Selby, Belay Birlie and Katherine Dempsey
+David Selby and Belay Birlie
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 An R implementation of George Karystianis’s text mining algorithm for
@@ -23,163 +22,119 @@ The bulk of the work will be in converting the `.mixup` files (see
 below) into the R equivalent. As it potentially avoids lots of file IO,
 it may ultimately be faster than the original implementation.
 
-### To do
+## Installation
 
-1.  Unit tests (add a large dataset of expected outputs, based on common
-    dosages)
-2.  Finish translating `dose_number3.mixup` and others
-3.  Pre-process strings (remove double-spaces, separate tokens)
-4.  Docs (explain to KD and BB how to maintain)
-5.  Front end
-6.  Upload to GitHub (privately)
-
-Repeated `sprintf` commands have been replaced with `glue::glue()` for
-improved code readability. Otherwise the vast majority of code is either
+As this is a private GitHub repository, you might not be able to install
+it using
 
 ``` r
-sprintf('(%s)', something)
+remotes::install_github('Selbosh/doseminer')
 ```
 
-or
+and should instead download the source (as a zip/tar) and use
 
 ``` r
-paste(something, collapse = '|')
+install.packages('path_to_downloaded_archive.tar.gz', repos = NULL)
 ```
 
-and both of these could be abstracted away to make the code more
-readable. This might include using `.transformer` functions in the
-`glue` package, or simply making a utility function called `or()`, for
-instance.
-
-## Workflow
-
-The Python implementation works something like the following.
-
-1.  Split prescriptions into lots of separate one-line text files, one
-    per prescription.
-
-<!-- end list -->
-
-  - `drug_information_extraction.py`
-
-<!-- end list -->
-
-2.  Use the Java library MinorThird to tokenise the free text.
-
-<!-- end list -->
-
-  - `dose_characteristics.mixup`
-      - `dose_number3.mixup` (in progress)
-      - `dose_unit.mixup` (done)
-      - `dose_interval.mixup`
-      - `frequency_phase.mixup`
-
-The output of this is a `.labels` file which describes where, in each
-file (via indices describing the position of a substring of the
-freetext) to find tokens of interest, and their category (a `spanType`).
-This is achieved via a sequence of regular expressions and can be (with
-some effort) translated into R.
-
-3.  The remainder of the Python scripts are mostly concerned with
-    housekeeping to convert the esoteric MinorThird output into a useful
-    format. Though there are some additional regular expressions in
-    Python, too, such as (I think) checking whether a drug is ‘required’
-    or ‘optional’, among others.
+See also `?remotes::install_local`.
 
 ## Usage
 
-The package is very agricultural at the moment. For the time being, the
-workhorse functions are
+The workhorse function is called `extract_from_prescription`. Pass it a
+character vector of freetext prescriptions and it will try to extract
+the following variables:
 
-  - `guess_dose_unit` (works so far)
-  - `guess_dose_number` (may need to return a min and a max)
-
-with plans for
-
-  - `guess_dose_frequency`
-  - `guess_dose_interval`
-
-and so on. Clearly, the functions to convert extracted strings into
-numeric dosages are not ready, yet. But the basic principle should be
-fairly clear.
+-   Dose frequency (the number of times per day a dose is administered)
+-   Dose interval (the number of days between doses)
+-   Dose unit (how individual doses are measured, e.g. millilitres,
+    tablets)
+-   Dose number (how many of those units comprise a single dose, e.g. 2
+    tablets)
+-   Optional (should the dose only be taken ‘if required’ / ‘as
+    needed’?)
 
 ``` r
 library(doseminer)
-results <- tibble(
-  input_txt  = common_dosages[1:50, 'PRESCRIPTION'],
-  unit       = guess_dose_unit(input_txt),
-  dose_txt   = guess_number(input_txt),
-  freq_txt   = guess_frequency(input_txt),
-  dose_num   = convert_number_text(dose_txt)
-)
-results
+extract_from_prescription('take two tablets every three days as needed')
 ```
 
 <div class="kable-table">
 
-| input\_txt                                      | unit | dose\_txt | freq\_txt         | dose\_num |
-| :---------------------------------------------- | :--- | :-------- | :---------------- | :-------- |
-| take one daily                                  |      | 1         |                   |           |
-| as directed                                     |      |           |                   |           |
-| one every day                                   |      | 1         | every day         |           |
-| one twice a day                                 |      | 1         | twice a day       |           |
-| 1 every day                                     |      | 1         | every day         |           |
-| one three times a day                           |      | 1         | three times a day |           |
-| take one each morning                           |      | 1         | each morning      |           |
-| one every morning                               |      | 1         | every morning     |           |
-| twice a day                                     |      |           | twice a day       |           |
-| take one at night                               |      | 1         | at night          |           |
-| every day                                       |      |           | every day         |           |
-| three times a day                               |      |           | three times a day |           |
-| take one twice daily                            |      | 1         | twice             |           |
-| one daily                                       |      | 1         | daily             |           |
-| take one 3 times/day                            |      | 1         | 3 times           |           |
-| one every night                                 |      | 1         | every night       |           |
-| 1 twice a day                                   |      | 1         | twice a day       |           |
-| 1 daily                                         |      | 1         | daily             |           |
-| one at night                                    |      | 1         | at night          |           |
-| 1 three times a day                             |      | 1         | three times a day |           |
-| one four times a day                            |      | 1         | four times a day  |           |
-| 1 every morning                                 |      | 1         | every morning     |           |
-| take one once daily                             |      | 1         | once              |           |
-| when required                                   |      |           |                   |           |
-| two every day                                   |      | 2         | every day         |           |
-| four times a day                                |      |           | four times a day  |           |
-| one in the morning                              |      | 1         |                   |           |
-| two twice a day                                 |      | 2         | twice a day       |           |
-| take 1 or 2 4 times/day                         |      | 1 or 2    | 4 times           |           |
-| inhale 2 doses as needed                        |      | 2         |                   |           |
-| apply twice daily                               |      | 1         | twice             |           |
-| take one as directed                            |      | 1         |                   |           |
-| two four times a day when required              |      | 2         | four times a day  |           |
-| 1 every night                                   |      | 1         | every night       |           |
-| use as directed                                 |      |           |                   |           |
-| 1 at night                                      |      | 1         | at night          |           |
-| take one 4 times/day                            |      | 1         | 4 times           |           |
-| inhale 2 doses twice daily                      |      | 2         | twice             |           |
-| one 5ml spoonsful to be taken three times a day | ml   | 1 5 ml    | three times a day |           |
-| one or two four times a day when required       |      | 1 or 2    | four times a day  |           |
-| two three times a day                           |      | 2         | three times a day |           |
-| apply 3 times/day                               |      | 1         | 3 times           |           |
-| two every night                                 |      | 2         | every night       |           |
-| apply as needed                                 |      | 1         |                   |           |
-| two puff twice a day                            | puff | 2         | twice a day       |           |
-| two four times a day                            |      | 2         | four times a day  |           |
-| take two daily                                  |      | 2         |                   |           |
-| 1 od                                            |      | 1         | od                |           |
-| 1 in the morning                                |      | 1         |                   |           |
-| take one twice a day                            |      | 1         | twice a day       |           |
+| raw                                         | output     | freq | itvl | dose | unit | optional |
+|:--------------------------------------------|:-----------|-----:|:-----|:-----|:-----|---------:|
+| take two tablets every three days as needed | take 2 tab |    1 | 3    | 2    | tab  |        1 |
+
+</div>
+
+Anything not matched is returned as `NA`, though some inferences are
+also made. For instance: if a dosage is specified as multiple times per
+day, with no explicit interval between days, it’s inferred the interval
+is one day. Similarly, if an interval is specified (e.g. every 3 days)
+but not a daily frequency, it’s presumed the dose is taken only once
+during the day.
+
+To see the package in action, a small vector of example prescriptions is
+included in the variable `example_prescriptions`.
+
+``` r
+extract_from_prescription(example_prescriptions)
+```
+
+<div class="kable-table">
+
+| raw                                                           | output                                   | freq | itvl | dose | unit        | optional |
+|:--------------------------------------------------------------|:-----------------------------------------|:-----|:-----|:-----|:------------|---------:|
+| 1 tablet to be taken daily                                    | 1 tab to be taken                        | 1    | 1    | 1    | tab         |        0 |
+| 2.5ml four times a day when required                          | 2.5 ml                                   | 4    | 1    | 2.5  | ml          |        1 |
+| 1.25mls three times a day                                     | 1.25 ml                                  | 3    | 1    | 1.25 | ml          |        0 |
+| take 10mls q.d.s. p.r.n.                                      | take 10 ml                               | 1    | 1    | 10   | ml          |        1 |
+| take 1 or 2 4 times/day                                       | take 1 - 2                               | 4    | 1    | 1-2  | NA          |        0 |
+| 2x5ml spoon 4 times/day                                       | 2 x 5 ml spoonful                        | 4    | 1    | 10   | ml spoonful |        0 |
+| take 2 tablets every six hours max eight in twenty four hours | take 2 tab max 8 in 24 hours             | 4    | 1    | 2    | tab         |        0 |
+| 1 tab nocte twenty eight tablets                              | 1 tab at night 28 tab                    | NA   | NA   | 1    | tab         |        0 |
+| 1-2 four times a day when required                            | 1 - 2                                    | 4    | 1    | 1-2  | NA          |        1 |
+| take one twice daily                                          | take 1                                   | 2    | 1    | 1    | NA          |        0 |
+| 1 q4h prn                                                     | 1                                        | 6    | 1    | 1    | NA          |        1 |
+| take two every three days                                     | take 2                                   | 1    | 3    | 2    | NA          |        0 |
+| five every week                                               | 5                                        | 1    | 7    | 5    | NA          |        0 |
+| every 72 hours                                                |                                          | 1    | 3    | NA   | NA          |        0 |
+| 1 x 5 ml spoon 4 / day for 10 days                            | 1 x 5 ml spoonful for 10 days            | 4    | 1    | 5    | ml spoonful |        0 |
+| two to three times a day                                      |                                          | 2-3  | 1    | NA   | NA          |        0 |
+| three times a week                                            |                                          | 1    | 2-3  | NA   | NA          |        0 |
+| three 5ml spoonsful to be taken four times a day after food   | 3 x 5 ml spoonful to be taken after food | 4    | 1    | 15   | ml spoonful |        0 |
+| take one or two every 4-6 hrs                                 | take 1 - 2 every 4 - 6 hrs               | NA   | NA   | NA   | NA          |        0 |
+| 5ml 3 hrly when required                                      | 5 ml                                     | 8    | 1    | 5    | ml          |        1 |
+| one every morning to reduce bp                                | 1 to reduce bp                           | 1    | 1    | 1    | NA          |        0 |
 
 </div>
 
 ## Development notes
 
-Always use non-capturing groups, `(?: )` in regular expressions. Capture
-groups slow down pattern matching and extraction considerably (unit
-tests took 1.5s with capture groups; setting all groups to non-capturing
-reduced runtime to be nearly instantaneous).
+To do:
+
+1.  Unit tests
+2.  Converting extracted frequency, interval and number ranges into
+    min/max
+3.  Improving algorithmic accuracy
+
+Built into this package is a series of functions for extracting and
+parsing natural language English numbers into their digit-based numeric
+form. This could be spun out into its own package for more general use.
+
+``` r
+replace_numbers(c('Thirty seven bottles of beer on the wall',
+                  'Take one down, pass it around',
+                  'Thirty-six bottles of beer on the wall!',
+                  'One MILLION dollars.'))
+```
+
+    ## [1] "37 bottles of beer on the wall"  "Take 1 down, pass it around"    
+    ## [3] "36 bottles of beer on the wall!" "1e+06 dollars."
+
+This does not support fractional units (“one and a half tablets”) yet.
 
 ## Contributors
 
 Maintained by David Selby (`david.selby@manchester.ac.uk`), Belay Birlie
-and Katherine Dempsey.
+and (formerly) Katherine Dempsey.

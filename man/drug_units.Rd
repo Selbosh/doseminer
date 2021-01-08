@@ -20,7 +20,5 @@ to standardise a freetext prescription.
 }
 \examples{
 stringr::str_replace_all('Three milli litres', drug_units)
-
-Regular
 }
 \keyword{datasets}

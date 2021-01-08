@@ -2,7 +2,7 @@
 
 export(clean_prescription_text)
 export(example_prescriptions)
-export(extract_dose_frequency_interval)
+export(extract_from_prescription)
 export(latin_medical_terms)
 export(replace_numbers)
 export(words2number)
