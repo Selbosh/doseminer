@@ -5,7 +5,7 @@
 \alias{drug_units}
 \title{Medication dosage units}
 \format{
-An object of class \code{character} of length 27.
+An object of class \code{character} of length 28.
 }
 \usage{
 drug_units

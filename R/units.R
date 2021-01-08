@@ -9,6 +9,7 @@
 #' @examples
 #' stringr::str_replace_all('Three milli litres', drug_units)
 drug_units <- c(
+  `applications?` = 'application',
   `mls? spoon(?:s?ful)?s?` = 'ml spoonful',
   `amp(?:oule)?s?` = "ampoule",
   `bolus(?:es)?` = "bolus",

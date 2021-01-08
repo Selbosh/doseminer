@@ -82,6 +82,7 @@ extract_from_prescription <- function(txt) {
   processed <- clean_prescription_text(txt) %>%
     # Translate from Latin to English.
     str_replace_all(latin_medical_terms) %>%
+    str_remove_all('as (?:directed|advised|shown(?: on the pack(?:et)?)?)') %>%
     # Invert hourly intervals to daily rates.
     str_replace_all('every \\d+(?: - \\d+)? h(?:ou)?r?s?|\\d h(?:(?:ou)?r)?ly',
                     hourly_to_daily) %>%
@@ -101,7 +102,10 @@ extract_from_prescription <- function(txt) {
     str_replace_all('every third (?:day|night|morning)', 'every 3 days') %>%
     str_replace_all('[0-9]+ / week', weekly_to_daily) %>%
     # Convert phrases like "one 5 ml spoonful" to "1 x 5 ml spoonful"
-    str_replace_all('(\\d+[.]?\\d*) (\\d+[.]?\\d* ml spoon)', '\\1 x \\2')
+    str_replace_all('(\\d+[.]?\\d*) (\\d+[.]?\\d* ml spoon)', '\\1 x \\2') %>%
+    # "Apply to the affected part" = 1 'dose'
+    str_replace_all('(?:apply|to be applied)(?: to the affected (?:area|part))?',
+                    '1 application')
 
   # NOTE: only retrieves first match.
   freq <- str_extract(
@@ -122,7 +126,7 @@ extract_from_prescription <- function(txt) {
   output <- processed %>%
     str_remove('(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d* / (?:day|week)') %>%
     str_remove('every (?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d* days') %>%
-    str_remove('(?:as|when|if) (?:req(?:uire)?d|ne(?:eded|cessary))') %>%
+    str_remove('(?:as|when|if) (?:req(?:uire)?d?|ne(?:eded|cessary))') %>%
     str_squish
 
   numeric_range <- '\\d+[.]?\\d*(?: (?:x|-) \\d+[.]?\\d*)?'

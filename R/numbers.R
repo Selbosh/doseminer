@@ -272,10 +272,10 @@ words2number <- function(txt) {
 #'
 #' @export
 latin_medical_terms <- c(
-  'dieb alt' = 'every 2 days',
-  'alt hs' = 'every 2 hours', ## ?
-  'noc(?:te?)?' = 'at night',
-  'mane' = 'in morning',
+  `dieb alt` = 'every 2 days',
+  `alt hs` = 'every 2 hours', ## ?
+  `noc(?:te?)?` = 'at night',
+  `mane` = 'in the morning',
   q8h = 'every 8 hours',
   q7h = 'every 7 hours',
   q6h = 'every 6 hours',
@@ -290,20 +290,20 @@ latin_medical_terms <- c(
   bt = 'bedtime',
   qam = 'every morning',
   qpm = 'every afternoon',
-  'qds?' = 'daily',
+  `qds?` = 'daily',
   q1d = 'daily',
   qid = '4 / day',
   qqh = 'every 4 hours',
   qwk = 'every week',
-  'bds?' = 'twice daily',
+  `bds?` = 'twice daily',
   bid = 'twice daily',
   bis = 'twice',
   biw = 'twice weekly',
-  'tds?' = 'thrice daily',
+  `tds?` = 'thrice daily',
   tiw = 'thrice weekly',
   tid = 'thrice daily',
-  'alt h(?:or)?' = 'every 2 hours',
-  'alt d(?:\\b|ieb)' = 'every 2 days',
+  `alt h(?:or)?` = 'every 2 hours',
+  `alt d(?:\\b|ieb)` = 'every 2 days',
   eod = 'every 2 days',
   qad = 'every 2 days',
   qod = 'every 2 days',
@@ -311,11 +311,13 @@ latin_medical_terms <- c(
   sid = '1 / day',
   am = 'morning',
   pm = 'afternoon',
-  '\\bom' = 'every morning',
-  '\\bon\\b' = 'every night',
-  '\\bod' = 'every day',
-  'sos|(?:si opus )?sit|siop' = 'as needed',
+  `\\bom` = 'every morning',
+  `\\bon\\b` = 'every night',
+  `\\bod` = 'every day',
+  `sos|(?:si opus )?sit|siop` = 'as needed',
   qs = 'as needed',
-  'prn|pro re nata' = 'as needed'
+  `prn|pro re nata` = 'as needed',
+  mdu = 'as directed',
+  `asd(?:ir)?` = 'as directed'
 )
 
