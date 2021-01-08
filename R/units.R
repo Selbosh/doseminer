@@ -32,7 +32,8 @@ drug_units <- c(
   `ounces?|oz` = "ounce",
   `units?` = "unit", `lo[sz]enges?` = "lozenge",
   `pack(?:et)?s?` = "pack",
-  `caps? ?full?s?` = "capful")
+  `caps? ?full?s?` = "capful",
+  `doses?` = 'dose')
 
 #' Extract units of dose from freetext prescriptions.
 #'

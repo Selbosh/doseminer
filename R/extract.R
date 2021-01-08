@@ -80,7 +80,6 @@ clean_prescription_text <- function(txt) {
 #' @export
 extract_from_prescription <- function(txt) {
   processed <- clean_prescription_text(txt) %>%
-    str_replace_all('times(/| a| per) ?', '/ ') %>%
     # Translate from Latin to English.
     str_replace_all(latin_medical_terms) %>%
     # Invert hourly intervals to daily rates.
@@ -90,14 +89,16 @@ extract_from_prescription <- function(txt) {
     str_replace_all(setNames(paste(1:3, 'times'),
                              c('once', 'twice', 'thrice'))) %>%
     # Convert "x daily" to standardised format.
-    str_replace_all('([0-9]+) ((times )?daily|a day)', '\\1 / day') %>%
+    str_replace_all('times(?:/| a| per) ?', '/ ') %>%
+    str_replace_all('([0-9]+) (?:(?:times )?daily|a day)', '\\1 / day') %>%
     # Just "daily" = 1 / day (previous line must run first)
-    str_replace_all('daily|every (day|morning|night)', '1 / day') %>%
+    str_replace_all('daily|(?:every|each|at|in the) (?:day|morning|night)',
+                    '1 / day') %>%
     # Convert daily intervals.
     str_replace_all('(?:every|per) week|weekly', 'every 7 days') %>%
-    str_replace_all('(every )?(on )?alt(ernate)? (day|night|morning)s?|every (other|second) day',
+    str_replace_all('(?:every )?(?:on )?alt(?:ernate)? (?:day|night|morning)s?|every (?:other|second) day',
                     'every 2 days') %>%
-    str_replace_all('every third (day|night|morning)', 'every 3 days') %>%
+    str_replace_all('every third (?:day|night|morning)', 'every 3 days') %>%
     str_replace_all('[0-9]+ / week', weekly_to_daily) %>%
     # Convert phrases like "one 5 ml spoonful" to "1 x 5 ml spoonful"
     str_replace_all('(\\d+[.]?\\d*) (\\d+[.]?\\d* ml spoon)', '\\1 x \\2')

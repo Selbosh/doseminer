@@ -312,7 +312,7 @@ latin_medical_terms <- c(
   am = 'morning',
   pm = 'afternoon',
   '\\bom' = 'every morning',
-  '\\bon' = 'every night',
+  '\\bon\\b' = 'every night',
   '\\bod' = 'every day',
   'sos|(?:si opus )?sit|siop' = 'as needed',
   qs = 'as needed',
