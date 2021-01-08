@@ -53,7 +53,7 @@ clean_prescription_text <- function(txt) {
     # Convert English numbers ("one", "two") to decimals (1, 2).
     #str_replace_all(english_nums, english2int) %>%
     replace_numbers %>%
-    str_replace_all('([0-9]+) ?(-|to|or) ?([0-9]+)', '\\1 - \\3') %>%
+    str_replace_all('([0-9]+) ?(-|(?:up )?to|or) ?([0-9]+)', '\\1 - \\3') %>%
     # Remove spaces from Latin expressions like "q1h"
     str_replace_all('(\\bq) ([1-8]) ([dh])', '\\1\\2\\3') %>%
     # Add spaces to really terse Latin expressions like '100mgbd'
@@ -83,6 +83,8 @@ extract_from_prescription <- function(txt) {
     # Translate from Latin to English.
     str_replace_all(latin_medical_terms) %>%
     str_remove_all('as (?:directed|advised|shown(?: on the pack(?:et)?)?)') %>%
+    # "Up to (a maximum of) n" = 0 - n
+    str_replace_all('\\bup to (?:a maximum of )?|\\bmax(?:imum)?(?: of)? ', '0 - ') %>%
     # Invert hourly intervals to daily rates.
     str_replace_all('every \\d+(?: - \\d+)? h(?:ou)?r?s?|\\d h(?:(?:ou)?r)?ly',
                     hourly_to_daily) %>%
@@ -93,7 +95,7 @@ extract_from_prescription <- function(txt) {
     str_replace_all('times(?:/| a| per) ?', '/ ') %>%
     str_replace_all('([0-9]+) (?:(?:times )?daily|a day)', '\\1 / day') %>%
     # Just "daily" = 1 / day (previous line must run first)
-    str_replace_all('daily|(?:every|each|at|in the) (?:day|morning|night)',
+    str_replace_all('daily|(?:every|each|at|in the) (?:day|morning|night|bedtime)',
                     '1 / day') %>%
     # Convert daily intervals.
     str_replace_all('(?:every|per) week|weekly', 'every 7 days') %>%
@@ -114,8 +116,12 @@ extract_from_prescription <- function(txt) {
   itvl <- str_extract(
     processed, '(?<=every )(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d*(?= days)') %>%
     str_remove_all(' ')
-  optional <- 1L *
-    str_detect(processed, '(?:as|when|if) (?:req(?:uire)?d|ne(?:eded|cessary))')
+
+  # Change maximum daily frequency if there is phrase like "max N in 24 hrs"
+  # max_freq <- str_extract(processed,
+  #   '(?<=0 - )\\d+(?=(?: \\w+)? (?:in (?:24 h(?:ou)?rs|1 day)|(?:1 )?/ day))')
+  # freq <- ifelse(is.na(max_freq), freq,
+  #                paste(str_match(freq, '^\\d+'), max_freq, sep = '-'))
 
   # If freq specified but not interval (or vice versa) then implicit = 1.
   # (This may be a risky assumption.)
@@ -140,6 +146,13 @@ extract_from_prescription <- function(txt) {
     str_replace_all('\\d+[.]?\\d* x \\d+[.]?\\d*', multiply_dose) %>%
     str_extract(numeric_range) %>%
     str_remove_all(' ')
+
+  optional <- as.integer(
+    (!is.na(freq) & str_detect(freq, '^0-')) |
+      (!is.na(dose) & str_detect(dose, '^0-')) |
+      str_detect(processed,
+                 '(?:as|when|if) (?:req(?:uire)?d|ne(?:eded|cessary))')
+  )
 
   unit <- extract_dose_unit(output)
 

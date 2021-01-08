@@ -91,8 +91,8 @@ extract_from_prescription(example_prescriptions)
 | take 10mls q.d.s. p.r.n.                                      | take 10 ml                               | 1    | 1    | 10   | ml          |        1 |
 | take 1 or 2 4 times/day                                       | take 1 - 2                               | 4    | 1    | 1-2  | NA          |        0 |
 | 2x5ml spoon 4 times/day                                       | 2 x 5 ml spoonful                        | 4    | 1    | 10   | ml spoonful |        0 |
-| take 2 tablets every six hours max eight in twenty four hours | take 2 tab max 8 in 24 hours             | 4    | 1    | 2    | tab         |        0 |
-| 1 tab nocte twenty eight tablets                              | 1 tab at night 28 tab                    | NA   | NA   | 1    | tab         |        0 |
+| take 2 tablets every six hours max eight in twenty four hours | take 2 tab 0 - 8 in 24 hours             | 4    | 1    | 2    | tab         |        0 |
+| 1 tab nocte twenty eight tablets                              | 1 tab 28 tab                             | 1    | 1    | 1    | tab         |        0 |
 | 1-2 four times a day when required                            | 1 - 2                                    | 4    | 1    | 1-2  | NA          |        1 |
 | take one twice daily                                          | take 1                                   | 2    | 1    | 1    | NA          |        0 |
 | 1 q4h prn                                                     | 1                                        | 6    | 1    | 1    | NA          |        1 |
