@@ -84,7 +84,8 @@ extract_from_prescription <- function(txt) {
     # Translate from Latin to English.
     str_replace_all(latin_medical_terms) %>%
     # Invert hourly intervals to daily rates.
-    str_replace_all('every \\d+ h(?:ou)?r?s?|\\d h(?:(?:ou)?r)?ly', hourly_to_daily) %>%
+    str_replace_all('every \\d+(?: - \\d+)? h(?:ou)?r?s?|\\d h(?:(?:ou)?r)?ly',
+                    hourly_to_daily) %>%
     # once, twice, thrice -> n times
     str_replace_all(setNames(paste(1:3, 'times'),
                              c('once', 'twice', 'thrice'))) %>%
@@ -144,12 +145,15 @@ extract_from_prescription <- function(txt) {
 #'
 #' @examples
 #' hourly_to_daily('every 4 hours')
+#' hourly_to_daily('every 3 - 4 hours')
+#' hourly_to_daily('every 36 - 72 hours')
 #'
-#' @importFrom stringr str_extract
-hourly_to_daily <- function(everyDhrs) {
-  n <- as.numeric(str_extract(everyDhrs, '\\d+'))
-  if (n >= 24) return(paste('every', n / 24, 'days'))
-  paste(24 / n, '/ day')
+#' @importFrom stringr str_extract_all
+hourly_to_daily <- function(txt) {
+  n <- as.numeric(str_extract_all(txt, '\\d+')[[1]])
+  if (any(n >= 24))
+    return(paste('every', paste(n / 24, collapse = ' - '), 'days'))
+  paste(paste(sort(24 / n), collapse = ' - '), '/ day')
 }
 
 #' Convert weekly interval to daily interval

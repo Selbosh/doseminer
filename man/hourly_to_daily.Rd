@@ -4,12 +4,14 @@
 \alias{hourly_to_daily}
 \title{Convert hourly to daily frequency}
 \usage{
-hourly_to_daily(everyDhrs)
+hourly_to_daily(txt)
 }
 \description{
 Convert hourly to daily frequency
 }
 \examples{
 hourly_to_daily('every 4 hours')
+hourly_to_daily('every 3 - 4 hours')
+hourly_to_daily('every 36 - 72 hours')
 
 }

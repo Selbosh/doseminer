@@ -103,7 +103,7 @@ extract_from_prescription(example_prescriptions)
 | two to three times a day                                      |                                          | 2-3  | 1    | NA   | NA          |        0 |
 | three times a week                                            |                                          | 1    | 2-3  | NA   | NA          |        0 |
 | three 5ml spoonsful to be taken four times a day after food   | 3 x 5 ml spoonful to be taken after food | 4    | 1    | 15   | ml spoonful |        0 |
-| take one or two every 4-6 hrs                                 | take 1 - 2 every 4 - 6 hrs               | NA   | NA   | NA   | NA          |        0 |
+| take one or two every 4-6 hrs                                 | take 1 - 2                               | 4-6  | 1    | 1-2  | NA          |        0 |
 | 5ml 3 hrly when required                                      | 5 ml                                     | 8    | 1    | 5    | ml          |        1 |
 | one every morning to reduce bp                                | 1 to reduce bp                           | 1    | 1    | 1    | NA          |        0 |
 
