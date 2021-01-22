@@ -93,7 +93,7 @@ extract_from_prescription <- function(txt) {
                              c('once', 'twice', 'thrice'))) %>%
     # Convert "x daily" to standardised format.
     str_replace_all('times(?:/| a| per) ?', '/ ') %>%
-    str_replace_all('([0-9]+) (?:(?:times )?daily|a day)', '\\1 / day') %>%
+    str_replace_all('(?<!take )([0-9]+) (?:(?:times )?daily|a day)', '\\1 / day') %>%
     # Just "daily" = 1 / day (previous line must run first)
     str_replace_all('daily|(?:every|each|at|in the) (?:day|morning|night|bedtime)',
                     '1 / day') %>%

@@ -5,7 +5,8 @@ David Selby and Belay Birlie
 <!-- badges: start -->
 <!-- badges: end -->
 
-An R implementation of George Karystianis’s text mining algorithm for
+An R implementation of the [DOSES text mining algorithm of Karystianis
+et al.](http://gnteam.cs.manchester.ac.uk/resources/DOSES/) for
 extracting drug dosage information from CPRD prescription data. The aim
 of this project is to provide a complete replacement for the algorithm,
 entirely written in R with no external dependencies (on Python on Java).
@@ -138,3 +139,11 @@ This does not support fractional units (“one and a half tablets”) yet.
 
 Maintained by David Selby (`david.selby@manchester.ac.uk`), Belay Birlie
 and (formerly) Katherine Dempsey.
+
+## References
+
+Karystianis, G., Sheppard, T., Dixon, W.G. *et al.* Modelling and
+extraction of variability in free-text medication prescriptions from an
+anonymised primary care electronic medical record research database.
+*BMC Med Inform Decis Mak* **16**, 18 (2015).  
+<https://doi.org/10.1186/s12911-016-0255-x>
