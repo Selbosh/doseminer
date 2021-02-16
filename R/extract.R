@@ -24,7 +24,10 @@ example_prescriptions <- c(
   'three 5ml spoonsful to be taken four times a day after food',
   'take one or two every 4-6 hrs',
   '5ml 3 hrly when required',
-  'one every morning to reduce bp')
+  'one every morning to reduce bp',
+  'take 1 or 2 every 6hrly when required',
+  'take 1 or 2 four times a day as required for pain',
+  'take 1 or 2 4 times/day if needed for pain')
 
 #' Clean up raw prescription freetext
 #'
@@ -81,8 +84,8 @@ clean_prescription_text <- function(txt) {
 extract_from_prescription <- function(txt) {
   processed <- clean_prescription_text(txt) %>%
     # Translate from Latin to English.
-    str_replace_all(latin_medical_terms) %>%
     str_remove_all('as (?:directed|advised|shown(?: on the pack(?:et)?)?)') %>%
+    str_replace_all(latin_medical_terms) %>%
     # "Up to (a maximum of) n" = 0 - n
     str_replace_all('\\bup to (?:a maximum of )?|\\bmax(?:imum)?(?: of)? ', '0 - ') %>%
     # Invert hourly intervals to daily rates.
@@ -93,11 +96,13 @@ extract_from_prescription <- function(txt) {
                              c('once', 'twice', 'thrice'))) %>%
     # Convert "x daily" to standardised format.
     str_replace_all('times(?:/| a| per) ?', '/ ') %>%
-    str_replace_all('(?<!take )([0-9]+) (?:(?:times )?daily|a day)', '\\1 / day') %>%
+    str_replace_all('(?<!take )([0-9]+) (?:times daily|a day)', '\\1 / day') %>%
     # Just "daily" = 1 / day (previous line must run first)
     str_replace_all('daily|(?:every|each|at|in the) (?:day|morning|night|bedtime)',
                     '1 / day') %>%
-    # Convert daily intervals.
+    # Convert daily (and weekly) intervals.
+    str_replace_all('(\\d+) times (?:(?:every |per )week|weekly)',
+                    '\\1 / week')  %>%
     str_replace_all('(?:every|per) week|weekly', 'every 7 days') %>%
     str_replace_all('(?:every )?(?:on )?alt(?:ernate)? (?:day|night|morning)s?|every (?:other|second) day',
                     'every 2 days') %>%
@@ -133,15 +138,16 @@ extract_from_prescription <- function(txt) {
     str_remove('(?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d* / (?:day|week)') %>%
     str_remove('every (?:\\d+\\.?\\d* ?[-] ?)?\\d+\\.?\\d* days') %>%
     str_remove('(?:as|when|if) (?:req(?:uire)?d?|ne(?:eded|cessary))') %>%
+    str_remove('^take ') %>%
     str_squish
 
   numeric_range <- '\\d+[.]?\\d*(?: (?:x|-) \\d+[.]?\\d*)?'
 
-  dose <- str_extract(
-    output, sprintf('^%s(?: (?:%s))?|%s(?: (?:%s)|$)',
-                    numeric_range, paste(drug_units, collapse = '|'),
-                    numeric_range, paste(drug_units, collapse = '|'))
-  ) %>%
+  dose <- output %>%
+    str_extract(sprintf('^%s(?: (?:%s))?|%s(?: (?:%s)|$)',
+                        numeric_range, paste(drug_units, collapse = '|'),
+                        numeric_range, paste(drug_units, collapse = '|'))
+    ) %>%
     # Convert doses like "a x b" to the arithmetic result a*b.
     str_replace_all('\\d+[.]?\\d* x \\d+[.]?\\d*', multiply_dose) %>%
     str_extract(numeric_range) %>%
