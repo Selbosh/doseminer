@@ -130,8 +130,10 @@ extract_from_prescription <- function(txt) {
 
   # If freq specified but not interval (or vice versa) then implicit = 1.
   # (This may be a risky assumption.)
-  itvl <- ifelse(is.na(itvl) & freq >= 1, 1, itvl)
-  freq <- ifelse(is.na(freq) & itvl >= 1, 1, freq)
+  #itvl <- ifelse(is.na(itvl) & !is.na(freq), 1, itvl)
+  itvl <- replace(itvl, is.na(itvl) & !is.na(freq), 1)
+  freq <- replace(freq, is.na(freq) & itvl > 1, 1)
+  #freq <- ifelse(is.na(freq) & !is.na(itvl), 1, freq)
 
   # Note: only removes first match.
   output <- processed %>%
