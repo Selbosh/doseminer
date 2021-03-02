@@ -25,9 +25,11 @@ example_prescriptions <- c(
   'take one or two every 4-6 hrs',
   '5ml 3 hrly when required',
   'one every morning to reduce bp',
-  'take 1 or 2 every 6hrly when required',
+  'take 1 or 2 6hrly when required',
   'take 1 or 2 four times a day as required for pain',
-  'take 1 or 2 4 times/day if needed for pain')
+  'take 1 or 2 4 times/day if needed for pain',
+  '1-2 tablets up to four times daily',
+  'take one or two tablets 6-8 hrly every 2-3 days')
 
 #' Clean up raw prescription freetext
 #'
@@ -89,7 +91,7 @@ extract_from_prescription <- function(txt) {
     # "Up to (a maximum of) n" = 0 - n
     str_replace_all('\\bup to (?:a maximum of )?|\\bmax(?:imum)?(?: of)? ', '0 - ') %>%
     # Invert hourly intervals to daily rates.
-    str_replace_all('every \\d+(?: - \\d+)? h(?:ou)?r?s?|\\d h(?:(?:ou)?r)?ly',
+    str_replace_all('every \\d+(?: - \\d+)? h(?:ou)?r?s?|\\d+(?: - \\d+)? h(?:(?:ou)?r)?ly',
                     hourly_to_daily) %>%
     # once, twice, thrice -> n times
     str_replace_all(setNames(paste(1:3, 'times'),

@@ -1,7 +1,7 @@
 Package: doseminer
 Type: Package
 Title: Dose Miner
-Version: 0.0.3.9008
+Version: 0.0.3.9009
 Author: David Selby
 Maintainer: David Selby <david.selby@manchester.ac.uk>
 Description: Extract prescription dosage data from CPRD free text.
