@@ -26,7 +26,7 @@ and \code{stringi} are based on the alternative ICU regular expression
 engine, so they cannot use this pattern.
 }
 \note{
-There is no support for fractions or mixed fractions, yet.
+There is limited support for fractional expressions like "one half".
 The original pattern did not support expressions like "a thousand", but
 it has been adapted to offer (experimental) support for this.
 Phrases like "million" or "thousand" with no prefix will \emph{not} match.

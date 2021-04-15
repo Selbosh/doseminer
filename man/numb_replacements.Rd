@@ -25,7 +25,8 @@ Lifted from Ben Marwick's \code{words2number} package and converted into
 a named vector (previously a chain of \code{\link{gsub}} calls).
 }
 \note{
-Does not yet support decimals, fractions or mixed fractions.
+Does not yet fully support decimals, fractions or mixed fractions.
+Some limited support for 'half' expressions, e.g. 'one and a half'.
 }
 \examples{
 stringr::str_replace_all('one hundred and forty-two', numb_replacements)

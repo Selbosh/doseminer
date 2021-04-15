@@ -11,7 +11,7 @@
 #' engine, so they cannot use this pattern.
 #'
 #' @note
-#' There is no support for fractions or mixed fractions, yet.
+#' There is limited support for fractional expressions like "one half".
 #' The original pattern did not support expressions like "a thousand", but
 #' it has been adapted to offer (experimental) support for this.
 #' Phrases like "million" or "thousand" with no prefix will \emph{not} match.
@@ -97,7 +97,7 @@ regex_numbers <- "(?x)           # free-spacing mode
 ) # end decimals definition
 
 (?<fractions>
-  (?:a[ ]|(?&one_to_9)[ ])?(?:\\b(?:hal(?:f|ves)|thirds?|quarters?|fifths?))
+  (?:a[ ]|(?&one_to_9)[])?(?:\\b(?:hal(?:f|ves)|thirds?|quarters?|fifths?))
 )
 
 (?<mixed_fractions>
@@ -168,7 +168,8 @@ replace_numbers <- function(string) {
 #' stringr::str_replace_all('one hundred and forty-two', numb_replacements)
 #'
 #' @note
-#' Does not yet support decimals, fractions or mixed fractions.
+#' Does not yet fully support decimals, fractions or mixed fractions.
+#' Some limited support for 'half' expressions, e.g. 'one and a half'.
 #'
 #' @source \url{https://github.com/benmarwick/words2number}
 numb_replacements <-

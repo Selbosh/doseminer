@@ -12,13 +12,16 @@ extract_dose_unit(txt)
 \value{
 A character vector the same length as \code{txt}, containing
 standardised units, or \code{NA} if no units were found in the prescription.
+
+A simple wrapper around \code{\link[stringr:str_replace]{str_replace_all}} and
+\code{\link[stringr]{str_extract}}.
+Based on \code{add_dose_unit.py} from original Python/Java algorithm.
 }
 \description{
-If there are multiple units in a string, only the first is returned.
+A function used internally in \code{\link{extract_from_prescription}} to
+parse the dosage units, such as millilitres, tablets, grams and so on.
+If there are multiple units mentioned in a string, only the first is returned.
 }
-\examples{
-extract_dose_unit(example_prescriptions)
-
-Based on \code{add_dose_unit.py} from original Python/Java algorithm.
-
+\seealso{
+\code{\link{extract_from_prescription}}
 }
