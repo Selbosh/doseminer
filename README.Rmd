@@ -62,6 +62,9 @@ included in the variable `example_prescriptions`.
 extract_from_prescription(example_prescriptions)
 ```
 
+The column `output` represents the 'residual' text after other features have been extracted.
+It can be ignored for most applications, but is useful for debugging prescriptions that have not been parsed as expected.
+
 ## Development notes
 
 To do:
@@ -80,6 +83,8 @@ replace_numbers(c('Thirty seven bottles of beer on the wall',
                   'Thirty-six bottles of beer on the wall!',
                   'One MILLION dollars.'))
 ```
+
+Inspired by Ben Marwick's `words2number` (https://github.com/benmarwick/words2number).
 
 This does not support fractional units ("one and a half tablets") yet.
 
