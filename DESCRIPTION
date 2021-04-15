@@ -2,9 +2,17 @@ Package: doseminer
 Type: Package
 Title: Dose Miner
 Version: 0.0.4.9001
-Author: David Selby
+Authors@R:
+  c(person(given = 'David Antony',
+           family = 'Selby',
+           role = c('aut', 'cre'),
+           email = 'david.selby@manchester.ac.uk',
+           comment = c(ORCID = '0000-0001-8026-5663')),
+    person(given = 'Belay Birlie',
+           family = 'Yimer',
+           role = c('ctb')))
 Maintainer: David Selby <david.selby@manchester.ac.uk>
-Description: Extract prescription dosage data from CPRD free text.
+Description: Extract dosage data from free-text prescriptions.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
