@@ -25,20 +25,13 @@ it may ultimately be faster than the original implementation.
 
 ## Installation
 
-As this is a private GitHub repository, you might not be able to install
-it using
+The package is not yet available on CRAN, so install it from GitHub
+using
 
 ``` r
+# install.packages('remotes')
 remotes::install_github('Selbosh/doseminer')
 ```
-
-and should instead download the source (as a zip/tar) and use
-
-``` r
-install.packages('path_to_downloaded_archive.tar.gz', repos = NULL)
-```
-
-See also `?remotes::install_local`.
 
 ## Usage
 
@@ -57,14 +50,14 @@ the following variables:
 
 ``` r
 library(doseminer)
-extract_from_prescription('take two tablets every three days as needed')
+extract_from_prescription('take two tablets every two to three days as needed')
 ```
 
 <div class="kable-table">
 
-| raw                                         | output     | freq | itvl | dose | unit | optional |
-|:--------------------------------------------|:-----------|-----:|:-----|:-----|:-----|---------:|
-| take two tablets every three days as needed | take 2 tab |    1 | 3    | 2    | tab  |        1 |
+| raw                                                | output | freq | itvl | dose | unit | optional |
+|:---------------------------------------------------|:-------|:-----|:-----|:-----|:-----|---------:|
+| take two tablets every two to three days as needed | 2 tab  | 1    | 2-3  | 2    | tab  |        1 |
 
 </div>
 
@@ -89,24 +82,29 @@ extract_from_prescription(example_prescriptions)
 | 1 tablet to be taken daily                                    | 1 tab to be taken                        | 1    | 1    | 1    | tab         |        0 |
 | 2.5ml four times a day when required                          | 2.5 ml                                   | 4    | 1    | 2.5  | ml          |        1 |
 | 1.25mls three times a day                                     | 1.25 ml                                  | 3    | 1    | 1.25 | ml          |        0 |
-| take 10mls q.d.s. p.r.n.                                      | take 10 ml                               | 1    | 1    | 10   | ml          |        1 |
-| take 1 or 2 4 times/day                                       | take 1 - 2                               | 4    | 1    | 1-2  | NA          |        0 |
+| take 10mls q.d.s. p.r.n.                                      | 10 ml                                    | 1    | 1    | 10   | ml          |        1 |
+| take 1 or 2 4 times/day                                       | 1 - 2                                    | 4    | 1    | 1-2  | NA          |        0 |
 | 2x5ml spoon 4 times/day                                       | 2 x 5 ml spoonful                        | 4    | 1    | 10   | ml spoonful |        0 |
-| take 2 tablets every six hours max eight in twenty four hours | take 2 tab 0 - 8 in 24 hours             | 4    | 1    | 2    | tab         |        0 |
+| take 2 tablets every six hours max eight in twenty four hours | 2 tab 0 - 8 in 24 hours                  | 4    | 1    | 2    | tab         |        0 |
 | 1 tab nocte twenty eight tablets                              | 1 tab 28 tab                             | 1    | 1    | 1    | tab         |        0 |
 | 1-2 four times a day when required                            | 1 - 2                                    | 4    | 1    | 1-2  | NA          |        1 |
-| take one twice daily                                          | take 1                                   | 2    | 1    | 1    | NA          |        0 |
+| take one twice daily                                          | 1                                        | 2    | 1    | 1    | NA          |        0 |
 | 1 q4h prn                                                     | 1                                        | 6    | 1    | 1    | NA          |        1 |
-| take two every three days                                     | take 2                                   | 1    | 3    | 2    | NA          |        0 |
+| take two every three days                                     | 2                                        | 1    | 3    | 2    | NA          |        0 |
 | five every week                                               | 5                                        | 1    | 7    | 5    | NA          |        0 |
 | every 72 hours                                                |                                          | 1    | 3    | NA   | NA          |        0 |
 | 1 x 5 ml spoon 4 / day for 10 days                            | 1 x 5 ml spoonful for 10 days            | 4    | 1    | 5    | ml spoonful |        0 |
 | two to three times a day                                      |                                          | 2-3  | 1    | NA   | NA          |        0 |
 | three times a week                                            |                                          | 1    | 2-3  | NA   | NA          |        0 |
 | three 5ml spoonsful to be taken four times a day after food   | 3 x 5 ml spoonful to be taken after food | 4    | 1    | 15   | ml spoonful |        0 |
-| take one or two every 4-6 hrs                                 | take 1 - 2                               | 4-6  | 1    | 1-2  | NA          |        0 |
+| take one or two every 4-6 hrs                                 | 1 - 2                                    | 4-6  | 1    | 1-2  | NA          |        0 |
 | 5ml 3 hrly when required                                      | 5 ml                                     | 8    | 1    | 5    | ml          |        1 |
 | one every morning to reduce bp                                | 1 to reduce bp                           | 1    | 1    | 1    | NA          |        0 |
+| take 1 or 2 6hrly when required                               | 1 - 2                                    | 4    | 1    | 1-2  | NA          |        1 |
+| take 1 or 2 four times a day as required for pain             | 1 - 2 for pain                           | 4    | 1    | 1-2  | NA          |        1 |
+| take 1 or 2 4 times/day if needed for pain                    | 1 - 2 for pain                           | 4    | 1    | 1-2  | NA          |        1 |
+| 1-2 tablets up to four times daily                            | 1 - 2 tab                                | 0-4  | 1    | 1-2  | tab         |        1 |
+| take one or two tablets 6-8 hrly every 2-3 days               | 1 - 2 tab                                | 3-4  | 2-3  | 1-2  | tab         |        0 |
 
 </div>
 
@@ -115,9 +113,8 @@ extract_from_prescription(example_prescriptions)
 To do:
 
 1.  Unit tests
-2.  Converting extracted frequency, interval and number ranges into
-    min/max
-3.  Improving algorithmic accuracy
+2.  Formal benchmarking
+3.  Improving algorithmic accuracy (e.g. on half measures)
 
 Built into this package is a series of functions for extracting and
 parsing natural language English numbers into their digit-based numeric

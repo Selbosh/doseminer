@@ -26,16 +26,11 @@ The bulk of the work will be in converting the `.mixup` files (see below) into t
 
 ## Installation
 
-As this is a private GitHub repository, you might not be able to install it
-using
+The package is not yet available on CRAN, so install it from GitHub using
 ```r
+# install.packages('remotes')
 remotes::install_github('Selbosh/doseminer')
 ```
-and should instead download the source (as a zip/tar) and use
-```r
-install.packages('path_to_downloaded_archive.tar.gz', repos = NULL)
-```
-See also `?remotes::install_local`.
 
 ## Usage
 
@@ -51,7 +46,7 @@ the following variables:
 
 ```{r}
 library(doseminer)
-extract_from_prescription('take two tablets every three days as needed')
+extract_from_prescription('take two tablets every two to three days as needed')
 ```
 
 Anything not matched is returned as `NA`, though some inferences are also made.
@@ -72,8 +67,8 @@ extract_from_prescription(example_prescriptions)
 To do:
 
 1. Unit tests
-2. Converting extracted frequency, interval and number ranges into min/max
-3. Improving algorithmic accuracy
+2. Formal benchmarking
+3. Improving algorithmic accuracy (e.g. on half measures)
 
 Built into this package is a series of functions for extracting and parsing
 natural language English numbers into their digit-based numeric form. This
