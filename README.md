@@ -50,14 +50,14 @@ the following variables:
 
 ``` r
 library(doseminer)
-extract_from_prescription('take two tablets every two to three days as needed')
+extract_from_prescription('take two and a half tablets every two to three days as needed')
 ```
 
 <div class="kable-table">
 
-| raw                                                | output | freq | itvl | dose | unit | optional |
-|:---------------------------------------------------|:-------|:-----|:-----|:-----|:-----|---------:|
-| take two tablets every two to three days as needed | 2 tab  | 1    | 2-3  | 2    | tab  |        1 |
+| raw                                                           | output  | freq | itvl | dose | unit | optional |
+|:--------------------------------------------------------------|:--------|:-----|:-----|:-----|:-----|---------:|
+| take two and a half tablets every two to three days as needed | 2.5 tab | 1    | 2-3  | 2.5  | tab  |        1 |
 
 </div>
 
@@ -129,16 +129,16 @@ form. This could be spun out into its own package for more general use.
 replace_numbers(c('Thirty seven bottles of beer on the wall',
                   'Take one down, pass it around',
                   'Thirty-six bottles of beer on the wall!',
-                  'One MILLION dollars.'))
+                  'One MILLION dollars.',
+                  'We do not take any half measures'))
 ```
 
     ## [1] "37 bottles of beer on the wall"  "Take 1 down, pass it around"    
-    ## [3] "36 bottles of beer on the wall!" "1e+06 dollars."
+    ## [3] "36 bottles of beer on the wall!" "1e+06 dollars."                 
+    ## [5] "We do not take any 0.5 measures"
 
 Inspired by Ben Marwick’s `words2number`
 (<https://github.com/benmarwick/words2number>).
-
-This does not support fractional units (“one and a half tablets”) yet.
 
 ## Contributors
 

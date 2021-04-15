@@ -25,6 +25,7 @@ test_that('Convert English fractions to decimals', {
 test_that('Replace English fractions in context', {
   expect_equivalent(replace_numbers('half spoonful'), '0.5 spoonful')
   expect_equivalent(replace_numbers('take a half'), 'take 0.5')
+  expect_equivalent(replace_numbers('no half measures!'), 'no 0.5 measures!')
   expect_equivalent(replace_numbers('one and a half tablets'), '1.5 tablets')
   expect_equivalent(replace_numbers('pi is three and a half'), 'pi is 3.5')
 })

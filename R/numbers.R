@@ -97,7 +97,7 @@ regex_numbers <- "(?x)           # free-spacing mode
 ) # end decimals definition
 
 (?<fractions>
-  (?:a|(?&one_to_9))?(?:[ ]|\\b)(?:hal(?:f|ves)|thirds?|quarters?|fifths?)
+  (?:a[ ]|(?&one_to_9)[ ])?(?:\\b(?:hal(?:f|ves)|thirds?|quarters?|fifths?))
 )
 
 (?<mixed_fractions>

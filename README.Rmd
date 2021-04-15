@@ -46,7 +46,7 @@ the following variables:
 
 ```{r}
 library(doseminer)
-extract_from_prescription('take two tablets every two to three days as needed')
+extract_from_prescription('take two and a half tablets every two to three days as needed')
 ```
 
 Anything not matched is returned as `NA`, though some inferences are also made.
@@ -81,12 +81,11 @@ could be spun out into its own package for more general use.
 replace_numbers(c('Thirty seven bottles of beer on the wall',
                   'Take one down, pass it around',
                   'Thirty-six bottles of beer on the wall!',
-                  'One MILLION dollars.'))
+                  'One MILLION dollars.',
+                  'We do not take any half measures'))
 ```
 
 Inspired by Ben Marwick's `words2number` (https://github.com/benmarwick/words2number).
-
-This does not support fractional units ("one and a half tablets") yet.
 
 ## Contributors
 
