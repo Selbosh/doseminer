@@ -5,7 +5,7 @@
 \alias{numb_replacements}
 \title{Dictionary of English names of numbers}
 \format{
-An object of class \code{character} of length 48.
+An object of class \code{character} of length 49.
 }
 \source{
 \url{https://github.com/benmarwick/words2number}

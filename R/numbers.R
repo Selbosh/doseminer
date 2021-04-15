@@ -97,18 +97,20 @@ regex_numbers <- "(?x)           # free-spacing mode
 ) # end decimals definition
 
 (?<fractions>
-  (?:a|(?&one_to_9))?(?:[ ]hal(?:f|ves)|thirds?|quarters?|fifths?)
+  (?:a|(?&one_to_9))?(?:[ ]|\\b)(?:hal(?:f|ves)|thirds?|quarters?|fifths?)
 )
 
 (?<mixed_fractions>
-  and(?:[ ](?&fractions))
+  (?:and|[&])(?:[ ](?&fractions))
 ) # end mixed fraction definition
 
 ) # End DEFINE
 
 
 ####### The Regex Matching Starts Here ########
-(?&bignumber)(?:[ ](?&decimals))?
+(?:(?&bignumber)|[0-9]+)(?:[ ](?&mixed_fractions))|   # 'three and a half'
+(?&fractions)|                             # 'one half'
+(?&bignumber)(?:[ ](?&decimals))?          # 'three point five'
 
   ### Other examples of groups we could match ###
   #(?&bignumber)
@@ -145,7 +147,7 @@ regex_numbers <- "(?x)           # free-spacing mode
 #'
 #' @export
 replace_numbers <- function(string) {
-  string <- str_remove_all(string, '(?:\\band|&)[ ]?')
+  #string <- str_remove_all(string, '(?:\\band|&)[ ]?')
   matches <- gregexpr(regex_numbers, string, perl = TRUE, ignore.case = TRUE)
   regmatches(string, matches) <- lapply(regmatches(string, matches), words2number)
   string
@@ -199,6 +201,8 @@ numb_replacements <-
     'eight hundred(?:th)?' = '+800',
     'nine hundred(?:th)?' = '+900',
 
+    '(?:\\b(?:a|one) )?half' = '+0.5',
+
     'one|first|\\ba\\b' = '+1',
     'second|two' = '+2',
     'th(?:ree|ird)' = '+3',
@@ -213,6 +217,7 @@ numb_replacements <-
     'thousand(?:th)?' = ')*(1000)+(0',
     'hundred(?:th)?' = '+100',
     'ten(?:th)?' = '+10',
+
     'and|&' = '',
     ' ' = '',
     '^' = '(0',
@@ -285,6 +290,7 @@ latin_medical_terms <- c(
   q2h = 'every 2 hours',
   q1h = 'every hour',
   qhs = 'at bedtime',
+  qqh = 'every 4 hours',
   qh = 'every hour',
   hs = 'bedtime',
   bt = 'bedtime',
@@ -293,7 +299,6 @@ latin_medical_terms <- c(
   `qds?` = 'daily',
   q1d = 'daily',
   qid = '4 / day',
-  qqh = 'every 4 hours',
   qwk = 'every week',
   `bds?` = 'twice daily',
   bid = 'twice daily',
