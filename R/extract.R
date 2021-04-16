@@ -49,6 +49,7 @@ clean_prescription_text <- function(txt) {
 #' extract_from_prescription(example_prescriptions)
 #'
 #' @import magrittr stringr
+#' @importFrom stats setNames
 #' @export
 extract_from_prescription <- function(txt) {
   processed <- clean_prescription_text(txt) %>%
@@ -138,11 +139,15 @@ extract_from_prescription <- function(txt) {
 
 #' Convert hourly to daily frequency
 #'
+#' @param txt String of the form 'every n hours'
+#'
 #' @examples
+#' \dontrun{
 #' hourly_to_daily('every 1 hour')
 #' hourly_to_daily('every 4 hours')
 #' hourly_to_daily('every 3 - 4 hours')
 #' hourly_to_daily('every 36 - 72 hours')
+#' }
 #'
 #' @importFrom stringr str_extract_all
 hourly_to_daily <- function(txt) {
@@ -154,8 +159,12 @@ hourly_to_daily <- function(txt) {
 
 #' Convert weekly interval to daily interval
 #'
+#' @param Dperweek String of the form 'n / week'
+#'
 #' @examples
+#' \dontrun{
 #' weekly_to_daily('3 / week')
+#' }
 #'
 #' @importFrom stringr str_extract
 weekly_to_daily <- function(Dperweek) {

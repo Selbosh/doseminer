@@ -1,7 +1,7 @@
 Package: doseminer
 Type: Package
 Title: Dose Miner
-Version: 0.0.6.9000
+Version: 0.0.7.9000
 Authors@R:
   c(person(given = 'David Antony',
            family = 'Selby',
@@ -20,8 +20,10 @@ Imports:
   magrittr(>= 2.0.1),
   stringr(>= 1.4.0)
 Suggests: 
+    rmarkdown,
     knitr,
-    testthat
+    testthat,
+    tidyr
 RoxygenNote: 7.1.1
 Depends:
   R (>= 3.5.0)

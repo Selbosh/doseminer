@@ -19,6 +19,6 @@ Use with a function like \code{\link[stringr:str_replace]{str_replace_all}}
 to standardise a freetext prescription.
 }
 \examples{
-stringr::str_replace_all('Three milli litres', drug_units)
+stringr::str_replace_all('Three milli litres', doseminer:::drug_units)
 }
 \keyword{datasets}

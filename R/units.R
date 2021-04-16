@@ -7,7 +7,7 @@
 #' to standardise a freetext prescription.
 #'
 #' @examples
-#' stringr::str_replace_all('Three milli litres', drug_units)
+#' stringr::str_replace_all('Three milli litres', doseminer:::drug_units)
 drug_units <- c(
   `applications?` = 'application',
   `mls? spoon(?:s?ful)?s?` = 'ml spoonful',
@@ -63,12 +63,16 @@ extract_dose_unit <- function(txt) {
 #'
 #' Replaces written phrases like "2 x 5" with their arithmetic result (i.e. 10)
 #'
+#' @param axb An string expression of the form 'A x B' where A, B are numeric
+#'
 #' @seealso
 #' Used internally within \code{\link{extract_from_prescription}}
 #'
 #' @examples
+#' \dontrun{
 #' multiply_dose('2 x 5')
 #' multiply_dose('2 - 4 x 5')
+#' }
 #'
 #' @importFrom stringr str_replace
 multiply_dose <- function(axb) {

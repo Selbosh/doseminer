@@ -163,7 +163,9 @@ replace_numbers <- function(string) {
 #' a named vector (previously a chain of \code{\link{gsub}} calls).
 #'
 #' @examples
+#' \dontrun{
 #' stringr::str_replace_all('one hundred and forty-two', numb_replacements)
+#' }
 #'
 #' @note
 #' Does not yet fully support decimals, fractions or mixed fractions.
@@ -235,7 +237,7 @@ numb_replacements <-
 #' \href{https://github.com/benmarwick/words2number}{\code{words2number}} package by
 #' Ben Marwick.
 #'
-#' @param phrase A character vector containing names of numbers (only).
+#' @param txt A character vector containing names of numbers (only).
 #'
 #' @return A named numeric vector of the same length as \code{phrase}.
 #'

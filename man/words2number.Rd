@@ -12,7 +12,7 @@ Ben Marwick.
 words2number(txt)
 }
 \arguments{
-\item{phrase}{A character vector containing names of numbers (only).}
+\item{txt}{A character vector containing names of numbers (only).}
 }
 \value{
 A named numeric vector of the same length as \code{phrase}.

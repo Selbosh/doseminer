@@ -29,7 +29,9 @@ Does not yet fully support decimals, fractions or mixed fractions.
 Some limited support for 'half' expressions, e.g. 'one and a half'.
 }
 \examples{
+\dontrun{
 stringr::str_replace_all('one hundred and forty-two', numb_replacements)
+}
 
 }
 \keyword{datasets}

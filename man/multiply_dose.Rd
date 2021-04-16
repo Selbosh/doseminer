@@ -6,12 +6,17 @@
 \usage{
 multiply_dose(axb)
 }
+\arguments{
+\item{axb}{An string expression of the form 'A x B' where A, B are numeric}
+}
 \description{
 Replaces written phrases like "2 x 5" with their arithmetic result (i.e. 10)
 }
 \examples{
+\dontrun{
 multiply_dose('2 x 5')
 multiply_dose('2 - 4 x 5')
+}
 
 }
 \seealso{
