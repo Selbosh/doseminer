@@ -1,0 +1,119 @@
+---
+title: "Introduction to doseminer"
+author: David Selby and Belay Birlie Yimer
+date: April 2021
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    df_print: kable
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Motivation
+
+This vignette introduces the R package **doseminer**, a package designed for the task of parsing English freetext prescriptions into a structured format.
+
+Intended end users are researchers in pharmacoepidemiology, especially those using data provided by the [Clinical Practice Research Datalink](https://www.cprd.com) (CPRD), a source of anonymised electronic health data in the United Kingdom.
+
+Electronic prescribing records typically include some structured data, such as the total quantity prescribed, some sort of product code to identify the drug, and the start date of the prescription.
+
+However, the daily dosage may only be available as dispensing instructions in English (and Latin) free text, and sometimes the _length_ of the prescription period can only be inferred from the estimated number of days needed to use up the prescribed total at a particular dose per day.
+
+Pharmacoepidemiologists may wish to estimate the 'exposure window' of a particular drug (i.e. the time that the patient was taking it) to see if there is an association between taking the drug and experiencing adverse events: one example being the relationship between opioid usage and fractures.
+
+## Getting started
+
+Data should be provided as a character (string) vector.
+Suppose we have the following dosage instructions (taken from a box of supermarket ibuprofen).
+
+```{r ibuprofen}
+p1 <- 'Take 1 or 2 tablets up to 3 times a day, as required'
+```
+
+Load the package and use the main workhorse function, `extract_from_prescription`, to parse the data into a structured data frame.
+
+```{r }
+library(doseminer)
+extract_from_prescription(p1)
+```
+
+The output includes seven columns:
+
+- `raw`: the input string. Useful for linking with other data structures
+- `dose`: the number of units of drug to administer at once
+- `unit`: the units of `dose` (may be unspecified)
+- `freq`: the number of times per day that the dose should be administered
+- `itvl`: the number of days between 'dose days'; if every day, then 1
+- `optional`: an indicator; can the dose be zero? If so, 1, else 0.
+- `output`: a 'residual' string of text not parsed by the algorithm. Useful for debugging. May be omitted in future releases.
+
+The package is vectorised, so you can provide a vector and it should process all of it, returning the result in the same order as the input.
+
+```{r}
+p2 <- c('Take 1 or 2 tablets up to 3 times a day, as required',
+        'Swallow 1 or 2 capsules with water, up to three times a day as required.',
+        'Two to four 5ml spoonfuls up to 4 times a day')
+extract_from_prescription(p2)
+```
+
+Names of units, such as millilitre spoonfuls, tablets (tabs) and capsules (caps) are standardised.
+Multiplicative doses, for example "two 5ml spoonfuls" are evaluated, giving "10ml spoonful".
+Ranges of values are reported as "min--max" in string format.
+It is left to the user to decide how to handle such interval data; for example to parse it as a vector, split into columns, compute an average or leave it as a string.
+
+If you do want to divide up such columns then the functions [`separate()`](https://tidyr.tidyverse.org/reference/separate.html) and [`separate_rows()`](https://tidyr.tidyverse.org/reference/separate_rows.html) from the [**tidyr**](https://tidyr.tidyverse.org/index.html) package can come in useful:
+
+```{r}
+library(tidyr)
+extract_from_prescription(p1) %>%
+  separate_rows(freq:dose, convert = TRUE)
+```
+
+Here are some more example prescriptions and their output.
+
+```{r}
+extract_from_prescription(example_prescriptions)
+```
+
+While the package tries to make reasonable inferences about missing data (it's usually fair to assume a dose interval is daily, if not otherwise specified), some variables, especially units, will be returned `NA` if there are no clues in the input text.
+
+## Utilities
+
+In order to parse the prescriptions, the package uses several utilities that have more general applications.
+Chief among these is an English number parser.
+This can turn individual names of numbers into numeric values:
+
+```{r}
+words2number(c('one', 'two', 'three', 'forty two', 'one million'))
+```
+
+And it can find and replace such sequences within sentences:
+
+```{r}
+replace_numbers(c('I have three apples',
+                  'The answer is forty two',
+                  'Take one and a half tablets'))
+```
+
+However, it does not handle all cases, especially decimals and fractions (except halves).
+The digits of these just tend to get added together.
+
+```{r}
+words2number(c('three point one four', 'four fifths'))
+```
+
+## Improving the package
+
+Like R itself, the package **doseminer** is offered with no warranty.
+Use it at your own risk.
+If you are interested in helping improve the performance and features of the **doseminer** package, then please file issues and submit pull requests on [GitHub](https://github.com/Selbosh/doseminer).
