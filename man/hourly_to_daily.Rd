@@ -10,6 +10,7 @@ hourly_to_daily(txt)
 Convert hourly to daily frequency
 }
 \examples{
+hourly_to_daily('every 1 hour')
 hourly_to_daily('every 4 hours')
 hourly_to_daily('every 3 - 4 hours')
 hourly_to_daily('every 36 - 72 hours')

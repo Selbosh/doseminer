@@ -97,20 +97,18 @@ regex_numbers <- "(?x)           # free-spacing mode
 ) # end decimals definition
 
 (?<fractions>
-  (?:a[ ]|(?&one_to_9)[])?(?:\\b(?:hal(?:f|ves)|thirds?|quarters?|fifths?))
-)
+  (?:a[ ]|(?&one_to_9)[ ])?(?:\\b(?:hal(?:f|ves)|thirds?|quarters?|fifths?))
+) # end fractions definition
 
 (?<mixed_fractions>
-  (?:and|[&])(?:[ ](?&fractions))
+  (?:(?:(?&bignumber)|\\d+)(?:[ ])(?:and|[&])[ ])?(?&fractions)
 ) # end mixed fraction definition
 
 ) # End DEFINE
 
 
 ####### The Regex Matching Starts Here ########
-(?:(?&bignumber)|[0-9]+)(?:[ ](?&mixed_fractions))|   # 'three and a half'
-(?&fractions)|                             # 'one half'
-(?&bignumber)(?:[ ](?&decimals))?          # 'three point five'
+(?&mixed_fractions)|(?&bignumber)(?:[ ](?&decimals))?
 
   ### Other examples of groups we could match ###
   #(?&bignumber)
@@ -289,10 +287,10 @@ latin_medical_terms <- c(
   q4h = 'every 4 hours',
   q3h = 'every 3 hours',
   q2h = 'every 2 hours',
-  q1h = 'every hour',
+  q1h = 'every 1 hour',
   qhs = 'at bedtime',
   qqh = 'every 4 hours',
-  qh = 'every hour',
+  qh = 'every 1 hour',
   hs = 'bedtime',
   bt = 'bedtime',
   qam = 'every morning',

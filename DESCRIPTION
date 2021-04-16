@@ -1,7 +1,7 @@
 Package: doseminer
 Type: Package
 Title: Dose Miner
-Version: 0.0.4.9001
+Version: 0.0.4.9002
 Authors@R:
   c(person(given = 'David Antony',
            family = 'Selby',
