@@ -68,9 +68,12 @@ extract_dose_unit <- function(txt) {
 #'
 #' @examples
 #' multiply_dose('2 x 5')
+#' multiply_dose('2 - 4 x 5')
 #'
 #' @importFrom stringr str_replace
 multiply_dose <- function(axb) {
-  expr <- str_replace(axb, '(\\d+[.]?\\d*) x (\\d+[.]?\\d*)', '\\1 * \\2')
-  eval(parse(text = expr))
+  expr <- str_replace(axb, '((?:\\d+[.]?\\d* - )?\\d+[.]?\\d*) x (\\d+[.]?\\d*)', 'c(\\1) * \\2') %>%
+    str_replace('-', ',')
+  values <- eval(parse(text = expr))
+  paste(values, collapse = ' - ')
 }

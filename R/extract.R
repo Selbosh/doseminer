@@ -1,36 +1,3 @@
-#' Example freetext prescriptions
-#'
-#' Adapted from CPRD common dosages
-#'
-#' @export
-example_prescriptions <- c(
-  '1 tablet to be taken daily',
-  '2.5ml four times a day when required',
-  '1.25mls three times a day',
-  'take 10mls q.d.s. p.r.n.',
-  'take 1 or 2 4 times/day',
-  '2x5ml spoon 4 times/day',
-  'take 2 tablets every six hours max eight in twenty four hours',
-  '1 tab nocte twenty eight tablets',
-  '1-2 four times a day when required',
-  'take one twice daily', # WARNING: converts to 'take 1 2 daily' - ambiguous
-  '1 q4h prn',
-  'take two every three days',
-  'five every week',
-  'every 72 hours',
-  '1 x 5 ml spoon 4 / day for 10 days',
-  'two to three times a day',
-  'three times a week',
-  'three 5ml spoonsful to be taken four times a day after food',
-  'take one or two every 4-6 hrs',
-  '5ml 3 hrly when required',
-  'one every morning to reduce bp',
-  'take 1 or 2 6hrly when required',
-  'take 1 or 2 four times a day as required for pain',
-  'take 1 or 2 4 times/day if needed for pain',
-  '1-2 tablets up to four times daily',
-  'take one or two tablets 6-8 hrly every 2-3 days')
-
 #' Clean up raw prescription freetext
 #'
 #' @param txt a character vector
@@ -145,7 +112,7 @@ extract_from_prescription <- function(txt) {
     str_remove('^take ') %>%
     str_squish
 
-  numeric_range <- '\\d+[.]?\\d*(?: (?:x|-) \\d+[.]?\\d*)?'
+  numeric_range <- '(?:\\d+[.]?\\d* - )?\\d+[.]?\\d*(?: (?:x|-) \\d+[.]?\\d*)?'
 
   dose <- output %>%
     str_extract(sprintf('^%s(?: (?:%s))?|%s(?: (?:%s)|$)',
@@ -153,7 +120,7 @@ extract_from_prescription <- function(txt) {
                         numeric_range, paste(drug_units, collapse = '|'))
     ) %>%
     # Convert doses like "a x b" to the arithmetic result a*b.
-    str_replace_all('\\d+[.]?\\d* x \\d+[.]?\\d*', multiply_dose) %>%
+    str_replace_all('(?:\\d+[.]?\\d* - )?\\d+[.]?\\d* x \\d+[.]?\\d*', multiply_dose) %>%
     str_extract(numeric_range) %>%
     str_remove_all(' ')
 

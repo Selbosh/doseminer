@@ -40,3 +40,8 @@ test_that('Convert Latin abbreviations to daily integer frequencies', {
   expect_equivalent(extract_from_prescription('qh')$freq, '24')
 })
 
+test_that('Convert ranges of spoon measurements', {
+  expect_equivalent(extract_from_prescription('Four 5ml spoonfuls up to 4 times a day')$dose, '20')
+  expect_equivalent(extract_from_prescription('Two to four 5ml spoonfuls up to 4 times a day')$dose, '10-20')
+})
+

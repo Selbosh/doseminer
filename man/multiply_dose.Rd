@@ -11,6 +11,7 @@ Replaces written phrases like "2 x 5" with their arithmetic result (i.e. 10)
 }
 \examples{
 multiply_dose('2 x 5')
+multiply_dose('2 - 4 x 5')
 
 }
 \seealso{
