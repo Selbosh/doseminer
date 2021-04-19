@@ -9,11 +9,12 @@
 Extract dosage data from free-text prescriptions.
 }
 \author{
-\strong{Maintainer}: David Antony Selby \email{david.selby@manchester.ac.uk} (\href{https://orcid.org/0000-0001-8026-5663}{ORCID})
+\strong{Maintainer}: David Selby \email{david.selby@manchester.ac.uk} (\href{https://orcid.org/0000-0001-8026-5663}{ORCID})
 
 Other contributors:
 \itemize{
-  \item Belay Birlie Yimer [contributor]
+  \item Belay Birlie Yimer \email{BelayBirlie.Yimer@manchester.ac.uk} [contributor]
+  \item Ben Marwick \email{benmarwick@gmail.com} [contributor]
 }
 
 }

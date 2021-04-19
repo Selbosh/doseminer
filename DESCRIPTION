@@ -1,16 +1,21 @@
 Package: doseminer
 Type: Package
 Title: Dose Miner
-Version: 0.0.7.9000
+Version: 0.0.7.9001
 Authors@R:
-  c(person(given = 'David Antony',
+  c(person(given = 'David',
            family = 'Selby',
            role = c('aut', 'cre'),
            email = 'david.selby@manchester.ac.uk',
            comment = c(ORCID = '0000-0001-8026-5663')),
     person(given = 'Belay Birlie',
            family = 'Yimer',
-           role = c('ctb')))
+           email = 'BelayBirlie.Yimer@manchester.ac.uk',
+           role = 'ctb'),
+    person(given = 'Ben',
+          family = 'Marwick',
+          email = 'benmarwick@gmail.com',
+          role = 'ctb'))
 Maintainer: David Selby <david.selby@manchester.ac.uk>
 Description: Extract dosage data from free-text prescriptions.
 License: MIT + file LICENSE
