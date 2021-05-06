@@ -1,0 +1,105 @@
+---
+title: "Pharmacoepidemiology with doseminer"
+author: David Selby and Belay Birlie Yimer
+date: May 2021
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    df_print: kable
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Development notes
+
+1. Simulate extreme dataset (as in RiME talk).
+
+2. See example dataset provided by Belay. Add (a subset of) this to bundle with the package? (Need to check its provenance.)
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(knitr.kable.NA = '')
+```
+
+This vignette presents an example analysis that might resemble a real-world study in pharmacoepidemiology.
+For a quick look at the functions and utilities available in **doseminer**, see the _Introduction to doseminer_ vignette.
+
+## Extract dosage from freetext prescription
+
+Let's import an example dataset containing prescriptions in free-text form.
+The data include product codes (`prodcode`) identifying the drugs prescribed; patient identifiers (`patid`); the date of the prescription start (`event_date`); the total quantity of drug prescribed (`qty`) and the actual free text (`text`) containing the dosage instructions for the medication.
+
+Technically, the package **doseminer** uses the latter, but combined with the other variables we can make inferences about drug exposure for patients.
+
+```{r import}
+data(cprd, package = 'doseminer')
+str(cprd)
+```
+
+Extract dosage information from the text.
+To avoid redundant computation, we remove duplicates, so each unique text string is only processed once. The results can then be joined back with the original prescriptions data, using the `raw` column from the output data frame.
+
+The **doseminer** function `extract_from_prescription()` only takes a character vector as input (not a single-column data frame, yet) so should `pull()` the text data out as a vector before processing.
+
+```{r message = FALSE}
+library(doseminer)
+
+free_text <- with(cprd, text[!duplicated(text) & nchar(text) > 0])
+extracted <- extract_from_prescription(free_text)
+head(extracted)
+```
+
+Now, we can relate the extracted prescription information back to the original dataset.
+
+```{r}
+dosages <- merge(extracted, cprd, by.x = 'raw', by.y = 'text', all.x = TRUE)
+head(dosages)
+```
+
+## Estimating drug exposure
+
+The original data provided the total quantity of drug and the start date, but not an end date.
+Using the information that **doseminer** infers about daily dose, we can estimate the number of days the patient can go at that average dose before they run out of medication.
+Hence we estimate a window of time that a patient was taking (exposed to) the drug, which can be used to determine if adverse events (e.g. fractures, given as separate data) occurred during drug exposure or not.
+
+### Missing values
+
+You might notice that some data are missing, either because it isn't explicitly mentioned in the prescription text or because the text itself was missing.
+In general, there are a range of methods one might use to impute or exclude such values, and the topic is beyond the scope of **doseminer**, but the focus of an upcoming package called **DrugPrepCPRD**, which explores the 'multiverse' of possible imputation decisions.
+
+For now, we will either (a) ignore incomplete prescriptions (complete case analysis) or (b) replace missing values with the mean for that patient and drug.
+
+In other scenarios, you might see a range of dose, frequency or interval: for example "take 1-2" or "every 2-3 hours".
+Again, you can choose how to summarise these values: taking the minimum, maximum or mean.
+If a dose is optional, you might want to include the value zero in this range.
+You should ensure your results are robust to this decision (again: see **DrugPrepCPRD**).
+
+### Drug exposure time
+
+The length of a prescription, in days, is defined as the total quantity of drug (`qty`) divided by the average number of units administered per day.
+In turn, the average number of units per day is calculated as the `dose` in each sitting, multiplied by the daily frequency (`freq`) and divided by the interval between 'dose-days' (`itvl`).
+
+Here is one way of estimating drug exposure windows for these data.
+
+```{r, warning = FALSE, message = FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+dosages %>%
+  separate(dose, c('min_dose', 'max_dose'), sep = '-',
+           convert = TRUE, fill = 'right') %>%
+  mutate(dose = coalesce((min_dose + max_dose) / 2, min_dose),
+         itvl = replace_na(as.numeric(itvl), 1),
+         freq = as.numeric(freq),
+         daily_dose = freq * dose / itvl,
+         end_date = date + qty / daily_dose) %>%
+  ggplot() +
+  aes(y = as.factor(patid), xmin = date, xmax = end_date) +
+  geom_errorbarh(height = .5) +
+  ylab('patient ID')
+```

@@ -1,3 +1,21 @@
+#' Sample electronic prescribing dataset
+#'
+#' A dataset containing product codes, patient identifiers, quantities, dates
+#' and free-text dose instructions, similar to data provided by the Clinical
+#' Practice Research Datalink (CPRD).
+#'
+#' Variables in the data include
+#' \describe{
+#' \item{id}{record identifier}
+#' \item{patid}{patient identifier}
+#' \item{date}{date of start of prescription}
+#' \item{prodcode}{product code; identifier for the prescribed medication}
+#' \item{qty}{total quantity of medication prescribed}
+#' \item{text}{free text prescribing instructions}
+#' }
+#'
+'cprd'
+
 #' Example freetext prescriptions
 #'
 #' Various examples of how prescription data may be represented in free text.
