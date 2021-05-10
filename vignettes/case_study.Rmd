@@ -7,7 +7,7 @@ output:
     theme: leonids
     df_print: kable
 vignette: >
-  %\VignetteIndexEntry{introduction}
+  %\VignetteIndexEntry{pharmacoepi}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
