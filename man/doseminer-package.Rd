@@ -4,9 +4,9 @@
 \name{doseminer-package}
 \alias{doseminer}
 \alias{doseminer-package}
-\title{doseminer: Dose Miner}
+\title{doseminer: Extract Drug Dosages from Free-Text Prescriptions}
 \description{
-Extract dosage data from free-text prescriptions.
+Utilities for converting unstructured electronic prescribing instructions into structured medication data. Extracts drug dose, units, daily dosing frequency and intervals from English-language prescriptions. Based on Karystianis et al. (2015) <doi:10.1186/s12911-016-0255-x>.
 }
 \author{
 \strong{Maintainer}: David Selby \email{david.selby@manchester.ac.uk} (\href{https://orcid.org/0000-0001-8026-5663}{ORCID})

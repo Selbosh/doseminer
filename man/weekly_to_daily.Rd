@@ -9,12 +9,9 @@ weekly_to_daily(Dperweek)
 \arguments{
 \item{Dperweek}{String of the form 'n / week'}
 }
+\value{
+An equivalent string of the form 'x / day'
+}
 \description{
 Convert weekly interval to daily interval
-}
-\examples{
-\dontrun{
-weekly_to_daily('3 / week')
-}
-
 }

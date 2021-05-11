@@ -2,15 +2,34 @@
 % Please edit documentation in R/extract.R
 \name{extract_from_prescription}
 \alias{extract_from_prescription}
-\title{Extract dose frequency information from freetext prescription}
+\title{Extract dosage information from free-text English-language prescriptions}
 \usage{
 extract_from_prescription(txt)
 }
 \arguments{
 \item{txt}{A character vector of freetext prescriptions}
 }
+\value{
+A \code{data.frame} with six columns:
+\describe{
+\item{raw}{the input character vector}
+\item{output}{a residual character vector of 'non-extracted' text. For debugging.}
+\item{freq}{number of doses administered per day}
+\item{itvl}{number of days between doses}
+\item{dose}{quantity of medication in each dose}
+\item{unit}{unit of measurement of medication, if any}
+\item{optional}{integer. Can the dose be zero? 1 if yes, otherwise 0}
+}
+}
 \description{
 This is the main workhorse function for the \code{doseminer} package.
+Pass in a character vector of prescribing instructions and it will extract
+structured dosage information.
+}
+\details{
+To avoid redundant computation, it is recommended to remove duplicate
+elements from the input vector. The results can be joined back to the
+original data using the \code{raw} column.
 }
 \examples{
 extract_from_prescription(example_prescriptions)

@@ -1,6 +1,6 @@
 Package: doseminer
 Type: Package
-Title: Dose Miner
+Title: Extract Drug Dosages from Free-Text Prescriptions
 Version: 0.1.0
 Authors@R:
   c(person(given = 'David',
@@ -17,7 +17,7 @@ Authors@R:
           email = 'benmarwick@gmail.com',
           role = 'ctb'))
 Maintainer: David Selby <david.selby@manchester.ac.uk>
-Description: Extract dosage data from free-text prescriptions.
+Description: Utilities for converting unstructured electronic prescribing instructions into structured medication data. Extracts drug dose, units, daily dosing frequency and intervals from English-language prescriptions. Based on Karystianis et al. (2015) <doi:10.1186/s12911-016-0255-x>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -9,15 +9,12 @@ multiply_dose(axb)
 \arguments{
 \item{axb}{An string expression of the form 'A x B' where A, B are numeric}
 }
+\value{
+An equivalent string giving the product of \code{A} and \code{B}.
+If \code{A} is a range of values, a range of values is returned.
+}
 \description{
 Replaces written phrases like "2 x 5" with their arithmetic result (i.e. 10)
-}
-\examples{
-\dontrun{
-multiply_dose('2 x 5')
-multiply_dose('2 - 4 x 5')
-}
-
 }
 \seealso{
 Used internally within \code{\link{extract_from_prescription}}

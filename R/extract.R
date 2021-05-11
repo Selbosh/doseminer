@@ -39,14 +39,32 @@ clean_prescription_text <- function(txt) {
     str_squish
 }
 
-#' Extract dose frequency information from freetext prescription
+#' Extract dosage information from free-text English-language prescriptions
 #'
 #' This is the main workhorse function for the \code{doseminer} package.
+#' Pass in a character vector of prescribing instructions and it will extract
+#' structured dosage information.
+#'
+#' To avoid redundant computation, it is recommended to remove duplicate
+#' elements from the input vector. The results can be joined back to the
+#' original data using the \code{raw} column.
 #'
 #' @param txt A character vector of freetext prescriptions
 #'
 #' @examples
 #' extract_from_prescription(example_prescriptions)
+#'
+#' @return
+#' A \code{data.frame} with six columns:
+#' \describe{
+#' \item{raw}{the input character vector}
+#' \item{output}{a residual character vector of 'non-extracted' text. For debugging.}
+#' \item{freq}{number of doses administered per day}
+#' \item{itvl}{number of days between doses}
+#' \item{dose}{quantity of medication in each dose}
+#' \item{unit}{unit of measurement of medication, if any}
+#' \item{optional}{integer. Can the dose be zero? 1 if yes, otherwise 0}
+#' }
 #'
 #' @import magrittr stringr
 #' @importFrom stats setNames
@@ -141,13 +159,7 @@ extract_from_prescription <- function(txt) {
 #'
 #' @param txt String of the form 'every n hours'
 #'
-#' @examples
-#' \dontrun{
-#' hourly_to_daily('every 1 hour')
-#' hourly_to_daily('every 4 hours')
-#' hourly_to_daily('every 3 - 4 hours')
-#' hourly_to_daily('every 36 - 72 hours')
-#' }
+#' @return An equivalent string of the form 'x / day'
 #'
 #' @importFrom stringr str_extract_all
 hourly_to_daily <- function(txt) {
@@ -161,10 +173,7 @@ hourly_to_daily <- function(txt) {
 #'
 #' @param Dperweek String of the form 'n / week'
 #'
-#' @examples
-#' \dontrun{
-#' weekly_to_daily('3 / week')
-#' }
+#' @return An equivalent string of the form 'x / day'
 #'
 #' @importFrom stringr str_extract
 weekly_to_daily <- function(Dperweek) {

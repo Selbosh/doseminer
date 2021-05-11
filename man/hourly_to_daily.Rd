@@ -9,15 +9,9 @@ hourly_to_daily(txt)
 \arguments{
 \item{txt}{String of the form 'every n hours'}
 }
+\value{
+An equivalent string of the form 'x / day'
+}
 \description{
 Convert hourly to daily frequency
-}
-\examples{
-\dontrun{
-hourly_to_daily('every 1 hour')
-hourly_to_daily('every 4 hours')
-hourly_to_daily('every 3 - 4 hours')
-hourly_to_daily('every 36 - 72 hours')
-}
-
 }

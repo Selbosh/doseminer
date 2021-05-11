@@ -4,10 +4,8 @@
 #' and values represent standardised names for those units.
 #'
 #' Use with a function like \code{\link[stringr:str_replace]{str_replace_all}}
-#' to standardise a freetext prescription.
-#'
-#' @examples
-#' stringr::str_replace_all('Three milli litres', doseminer:::drug_units)
+#' to standardise a freetext prescription. Used internally in
+#' \code{\link{extract_from_prescription}}.
 drug_units <- c(
   `applications?` = 'application',
   `mls? spoon(?:s?ful)?s?` = 'ml spoonful',
@@ -68,11 +66,8 @@ extract_dose_unit <- function(txt) {
 #' @seealso
 #' Used internally within \code{\link{extract_from_prescription}}
 #'
-#' @examples
-#' \dontrun{
-#' multiply_dose('2 x 5')
-#' multiply_dose('2 - 4 x 5')
-#' }
+#' @return An equivalent string giving the product of \code{A} and \code{B}.
+#' If \code{A} is a range of values, a range of values is returned.
 #'
 #' @importFrom stringr str_replace
 multiply_dose <- function(axb) {

@@ -7,4 +7,14 @@
 
 0 errors | 0 warnings | 1 note
 
-* This is a new release.
+## Resubmission
+
+This is a resubmission (of a new release). In this version I have
+
+* Added more detail about package functionality to Description, including a reference, and made the Title of the package more descriptive.
+* Removed all instances of `\dontrun{}` from examples.
+* Added `\value` to all methods where it was previously missing.
+* Removed a call to a non-exported function (`foo:::bar`) from an example.
+
+The spell-checker flags the Description for an author name (+ 'et al') and I
+think this can be ignored.

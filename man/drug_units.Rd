@@ -16,9 +16,7 @@ and values represent standardised names for those units.
 }
 \details{
 Use with a function like \code{\link[stringr:str_replace]{str_replace_all}}
-to standardise a freetext prescription.
-}
-\examples{
-stringr::str_replace_all('Three milli litres', doseminer:::drug_units)
+to standardise a freetext prescription. Used internally in
+\code{\link{extract_from_prescription}}.
 }
 \keyword{datasets}
