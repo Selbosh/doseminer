@@ -13,7 +13,7 @@ Utilities for converting unstructured electronic prescribing instructions into s
 
 Other contributors:
 \itemize{
-  \item Belay Birlie Yimer \email{BelayBirlie.Yimer@manchester.ac.uk} [contributor]
+  \item Belay Birlie Yimer \email{belaybirlie.yimer@manchester.ac.uk} [contributor]
   \item Ben Marwick \email{benmarwick@gmail.com} [contributor]
 }
 

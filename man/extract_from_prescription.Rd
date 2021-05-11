@@ -10,7 +10,7 @@ extract_from_prescription(txt)
 \item{txt}{A character vector of freetext prescriptions}
 }
 \value{
-A \code{data.frame} with six columns:
+A \code{data.frame} with seven columns:
 \describe{
 \item{raw}{the input character vector}
 \item{output}{a residual character vector of 'non-extracted' text. For debugging.}

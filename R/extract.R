@@ -55,7 +55,7 @@ clean_prescription_text <- function(txt) {
 #' extract_from_prescription(example_prescriptions)
 #'
 #' @return
-#' A \code{data.frame} with six columns:
+#' A \code{data.frame} with seven columns:
 #' \describe{
 #' \item{raw}{the input character vector}
 #' \item{output}{a residual character vector of 'non-extracted' text. For debugging.}
