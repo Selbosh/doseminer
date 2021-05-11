@@ -10,7 +10,7 @@ Authors@R:
            comment = c(ORCID = '0000-0001-8026-5663')),
     person(given = 'Belay Birlie',
            family = 'Yimer',
-           email = 'BelayBirlie.Yimer@manchester.ac.uk',
+           email = 'belaybirlie.yimer@manchester.ac.uk',
            role = 'ctb'),
     person(given = 'Ben',
           family = 'Marwick',
