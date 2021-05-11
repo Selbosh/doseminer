@@ -12,12 +12,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-## Development notes
-
-1. Simulate extreme dataset (as in RiME talk).
-
-2. See example dataset provided by Belay. Add (a subset of) this to bundle with the package? (Need to check its provenance.)
-
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
