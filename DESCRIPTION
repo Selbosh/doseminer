@@ -36,3 +36,4 @@ RoxygenNote: 7.1.1
 Depends:
   R (>= 3.5.0)
 VignetteBuilder: knitr
+Language: en-GB
