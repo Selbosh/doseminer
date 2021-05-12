@@ -152,7 +152,8 @@ extract_from_prescription <- function(txt) {
 
   unit <- extract_dose_unit(output)
 
-  data.frame(raw = txt, output, freq, itvl, dose, unit, optional)
+  data.frame(raw = txt, output, freq, itvl, dose, unit, optional,
+             stringsAsFactors = FALSE)
 }
 
 #' Convert hourly to daily frequency

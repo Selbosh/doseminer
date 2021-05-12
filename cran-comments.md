@@ -9,12 +9,5 @@
 
 ## Resubmission
 
-This is a resubmission (of a new release). In this version I have
-
-* Added more detail about package functionality to Description, including a reference
-* Made the Title of the package more descriptive.
-* Removed all instances of `\dontrun{}` from examples.
-* Added `\value` to all methods where it was previously missing.
-* Removed a call to a non-exported function (`foo:::bar`) from an example.
-
-The 'possibly-misspelt' word in the Description is an author's name.
+* This is a resubmission (of a new release).
+* Version 0.1.0 was accepted and sent to CRAN, but then failed on `r-oldrel`, due to `stringsAsFactors` causing some unit test comparisons to fail on older versions of R (i.e. < 4.0.0). This bug is now fixed.
