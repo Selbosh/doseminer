@@ -5,28 +5,24 @@ David Selby and Belay Birlie
 <!-- badges: start -->
 <!-- badges: end -->
 
-An R implementation of the [DOSES text mining algorithm of Karystianis
-et al.](http://gnteam.cs.manchester.ac.uk/resources/DOSES/) for
-extracting drug dosage information from CPRD prescription data. The aim
-of this project is to provide a complete replacement for the algorithm,
-entirely written in R with no external dependencies (on Python on Java).
+An R implementation of the text mining algorithm of [Karystianis et
+al. (2015)](https://doi.org/10.1186/s12911-016-0255-x) for extracting
+drug dosage information from electronic prescription data (especially
+from CPRD). The aim of this project is to provide a complete replacement
+for the algorithm, entirely written in R with no external dependencies
+(unlike the original implementation, which depended on Python and Java).
 This should make the tool more portable, extensible and suitable for use
 across different platforms (Windows, Mac, Unix).
 
-## Roadmap
-
-The package **doseminer** is still in development. Current plans are to
-transliterate the existing Python code to R. Later we will tidy up the
-user interface and possibly allow for customisation.
-
-The bulk of the work will be in converting the `.mixup` files (see
-below) into the R equivalent. As it potentially avoids lots of file IO,
-it may ultimately be faster than the original implementation.
-
 ## Installation
 
-The package is not yet available on CRAN, so install it from GitHub
-using
+You can install **doseminer** from CRAN using
+
+``` r
+install.packages('doseminer')
+```
+
+or get the latest development version via GitHub:
 
 ``` r
 # install.packages('remotes')
@@ -105,6 +101,7 @@ extract_from_prescription(example_prescriptions)
 | take 1 or 2 4 times/day if needed for pain                    | 1 - 2 for pain                           | 4    | 1    | 1-2  | NA          |        1 |
 | 1-2 tablets up to four times daily                            | 1 - 2 tab                                | 0-4  | 1    | 1-2  | tab         |        1 |
 | take one or two tablets 6-8 hrly every 2-3 days               | 1 - 2 tab                                | 3-4  | 2-3  | 1-2  | tab         |        0 |
+| one and a half tablets every three hours                      | 1.5 tab                                  | 8    | 1    | 1.5  | tab         |        0 |
 
 </div>
 
@@ -113,13 +110,7 @@ have been extracted. It can be ignored for most applications, but is
 useful for debugging prescriptions that have not been parsed as
 expected.
 
-## Development notes
-
-To do:
-
-1.  Unit tests
-2.  Formal benchmarking
-3.  Improving algorithmic accuracy (e.g. on half measures)
+## English words to numbers
 
 Built into this package is a series of functions for extracting and
 parsing natural language English numbers into their digit-based numeric
@@ -142,8 +133,8 @@ Inspired by Ben Marwick’s `words2number`
 
 ## Contributors
 
-Maintained by David Selby (`david.selby@manchester.ac.uk`), Belay Birlie
-and (formerly) Katherine Dempsey.
+Maintained by David Selby (`david.selby@manchester.ac.uk`) and Belay
+Birlie.
 
 ## References
 
