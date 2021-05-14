@@ -8,6 +8,13 @@
 \description{
 Utilities for converting unstructured electronic prescribing instructions into structured medication data. Extracts drug dose, units, daily dosing frequency and intervals from English-language prescriptions. Based on Karystianis et al. (2015) <doi:10.1186/s12911-016-0255-x>.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item Report bugs at \url{https://github.com/Selbosh/doseminer/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: David Selby \email{david.selby@manchester.ac.uk} (\href{https://orcid.org/0000-0001-8026-5663}{ORCID})
 
