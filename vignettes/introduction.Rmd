@@ -1,7 +1,7 @@
 ---
 title: "Introduction to doseminer"
 author: David Selby and Belay Birlie Yimer
-date: April 2021
+date: July 2021
 output:
   prettydoc::html_pretty:
     theme: leonids
@@ -55,7 +55,7 @@ The output includes seven columns:
 - `freq`: the number of times per day that the dose should be administered
 - `itvl`: the number of days between 'dose days'; if every day, then 1
 - `optional`: an indicator; can the dose be zero? If so, 1, else 0.
-- `output`: a 'residual' string of text not parsed by the algorithm. Useful for debugging. May be omitted in future releases.
+<!--- `output`: a 'residual' string of text not parsed by the algorithm. Useful for debugging. May be omitted in future releases.-->
 
 The package is vectorised, so you can provide a vector and it should process all of it, returning the result in the same order as the input.
 
