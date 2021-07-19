@@ -1,6 +1,6 @@
 # doseminer 0.1.2
 
-* Remove the `output` column (only used for debugging) from the output of `extract_from_prescription`
+* Remove the `output` column (only used for debugging) from the data frame returned by `extract_from_prescription`
 
 # doseminer 0.1.1
 
