@@ -305,7 +305,7 @@ latin_medical_terms <- c(
   bid = 'twice daily',
   bis = 'twice',
   biw = 'twice weekly',
-  `tds?` = 'thrice daily',
+  `\\btds?` = 'thrice daily',
   tiw = 'thrice weekly',
   tid = 'thrice daily',
   `alt h(?:or)?` = 'every 2 hours',

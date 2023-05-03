@@ -20,7 +20,7 @@ drug_units <- c(
   `sachets?` = "sachet",
   `pastilles?` = "pastille",
   `pills?` = "pill",
-  `dr(?:o?ps?)?` = "drop",
+  `\\bdr(?:o?ps?)?` = "drop",
   `puff?s?` = "puff",
   `blisters?` = "blister",
   `spr(?:ays?)?\\b` = "spray",
@@ -54,7 +54,8 @@ drug_units <- c(
 #' @importFrom stringr str_replace_all str_extract
 extract_dose_unit <- function(txt) {
   standardised <- stringr::str_replace_all(txt, drug_units)
-  stringr::str_extract(standardised, paste(drug_units, collapse = '|'))
+  stringr::str_extract(standardised,
+                       paste0('\\b(?:', paste(drug_units, collapse = '|'), ')\\b'))
 }
 
 #' Evaluate a multiplicative plaintext expression

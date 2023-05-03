@@ -132,8 +132,11 @@ extract_from_prescription <- function(txt) {
     str_squish
 
   numeric_range <- '(?:\\d+[.]?\\d* - )?\\d+[.]?\\d*(?: (?:x|-) \\d+[.]?\\d*)?'
-
+  
   dose <- output %>%
+    # Remove first mention of units, in case of ranges:
+    str_remove(sprintf('(?<=\\d) ?(?:%s)', paste(drug_units, collapse = '|'))) %>%
+    str_replace('(?<=\\d)/(?=\\d)', ' - ') %>%
     str_extract(sprintf('^%s(?: (?:%s))?|%s(?: (?:%s)|$)',
                         numeric_range, paste(drug_units, collapse = '|'),
                         numeric_range, paste(drug_units, collapse = '|'))
