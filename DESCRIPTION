@@ -1,7 +1,7 @@
 Package: doseminer
 Type: Package
 Title: Extract Drug Dosages from Free-Text Prescriptions
-Version: 0.1.3.9000
+Version: 0.1.3
 Authors@R:
   c(person(given = 'David',
            family = 'Selby',
