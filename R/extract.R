@@ -167,10 +167,16 @@ extract_from_prescription <- function(txt) {
 #'
 #' @importFrom stringr str_extract_all
 hourly_to_daily <- function(txt) {
-  n <- as.numeric(str_extract_all(txt, '\\d+')[[1]])
-  if (any(n >= 24))
-    return(paste('every', paste(n / 24, collapse = ' - '), 'days'))
-  paste(paste(sort(24 / n), collapse = ' - '), '/ day')
+  ns <- str_extract_all(txt, '\\d+')
+  ns <- lapply(ns, as.numeric)
+
+  vapply(ns, function(n) {
+    if (any(n >= 24)) {
+      paste('every', paste(n / 24, collapse = ' - '), 'days')
+    } else {
+      paste(paste(sort(24 / n), collapse = ' - '), '/ day')
+    }
+  }, FUN.VALUE = character(1))
 }
 
 #' Convert weekly interval to daily interval
@@ -181,10 +187,13 @@ hourly_to_daily <- function(txt) {
 #'
 #' @importFrom stringr str_extract
 weekly_to_daily <- function(Dperweek) {
-  n <- 7 / as.numeric(str_extract(Dperweek, '\\d+'))
+  n <- 7 / as.numeric(str_extract_all(Dperweek, '\\d+'))
   min <- floor(n)
   max <- ceiling(n)
-  if (min == max) {
-    paste('every', n, 'days')
-  } else paste('every', min, '-', max, 'days')
+  
+  ifelse(
+    min == max, 
+    paste('every', n, 'days'),
+    paste('every', min, '-', max, 'days')
+  )
 }
