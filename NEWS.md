@@ -1,3 +1,7 @@
+# doseminer 0.2.0
+
+* Adds fix for breaking change introduced by upstream dependency `stringr`. Thanks to @hadley. 
+
 # doseminer 0.1.2
 
 * Remove the `output` column (only used for debugging) from the data frame returned by `extract_from_prescription`
