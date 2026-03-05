@@ -111,10 +111,10 @@ extract_from_prescription(example_prescriptions)
 
 </div>
 
-The column `output` represents the ‘residual’ text after other features
-have been extracted. It can be ignored for most applications, but is
-useful for debugging prescriptions that have not been parsed as
-expected.
+The column `output` (omitted here) represents the ‘residual’ text after
+other features have been extracted. It can be ignored for most
+applications, but is useful for debugging prescriptions that have not
+been parsed as expected.
 
 ## English words to numbers
 
@@ -139,7 +139,7 @@ Inspired by Ben Marwick’s `words2number`
 
 ## Contributors
 
-Maintained by David Selby (`david.selby@manchester.ac.uk`) and Belay
+Maintained by David Selby (`david_antony.selby@dfki.de`) and Belay
 Birlie.
 
 ## References
