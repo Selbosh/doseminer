@@ -6,7 +6,7 @@
 \alias{doseminer-package}
 \title{doseminer: Extract Drug Dosages from Free-Text Prescriptions}
 \description{
-Utilities for converting unstructured electronic prescribing instructions into structured medication data. Extracts drug dose, units, daily dosing frequency and intervals from English-language prescriptions. Based on Karystianis et al. (2015) <doi:10.1186/s12911-016-0255-x>.
+Utilities for converting unstructured electronic prescribing instructions into structured medication data. Extracts drug dose, units, daily dosing frequency and intervals from English-language prescriptions. Based on Karystianis et al. (2015) \doi{10.1186/s12911-016-0255-x}.
 }
 \seealso{
 Useful links:
@@ -16,7 +16,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: David Selby \email{david.selby@manchester.ac.uk} (\href{https://orcid.org/0000-0001-8026-5663}{ORCID})
+\strong{Maintainer}: David Selby \email{david_antony.selby@dfki.de} (\href{https://orcid.org/0000-0001-8026-5663}{ORCID})
 
 Other contributors:
 \itemize{

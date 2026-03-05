@@ -3,6 +3,10 @@ R package doseminer
 David Selby and Belay Birlie
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/Selbosh/doseminer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Selbosh/doseminer/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/doseminer)](https://CRAN.R-project.org/package=doseminer)
 <!-- badges: end -->
 
 An R implementation of the text mining algorithm of [Karystianis et
@@ -35,14 +39,16 @@ The workhorse function is called `extract_from_prescription`. Pass it a
 character vector of freetext prescriptions and it will try to extract
 the following variables:
 
--   Dose frequency (the number of times per day a dose is administered)
--   Dose interval (the number of days between doses)
--   Dose unit (how individual doses are measured, e.g. millilitres,
+  - Dose frequency (the number of times per day a dose is administered)
+  - Dose interval (the number of days between doses)
+  - Dose unit (how individual doses are measured, e.g. millilitres,
     tablets)
--   Dose number (how many of those units comprise a single dose, e.g. 2
+  - Dose number (how many of those units comprise a single dose, e.g. 2
     tablets)
--   Optional (should the dose only be taken ‘if required’ / ‘as
+  - Optional (should the dose only be taken ‘if required’ / ‘as
     needed’?)
+
+<!-- end list -->
 
 ``` r
 library(doseminer)
@@ -51,9 +57,9 @@ extract_from_prescription('take two and a half tablets every two to three days a
 
 <div class="kable-table">
 
-| raw                                                           | output  | freq | itvl | dose | unit | optional |
-|:--------------------------------------------------------------|:--------|:-----|:-----|:-----|:-----|---------:|
-| take two and a half tablets every two to three days as needed | 2.5 tab | 1    | 2-3  | 2.5  | tab  |        1 |
+| raw                                                           | freq | itvl | dose | unit | optional |
+| :------------------------------------------------------------ | :--- | :--- | :--- | :--- | -------: |
+| take two and a half tablets every two to three days as needed | 1    | 2-3  | 2.5  | tab  |        1 |
 
 </div>
 
@@ -73,35 +79,35 @@ extract_from_prescription(example_prescriptions)
 
 <div class="kable-table">
 
-| raw                                                           | output                                   | freq | itvl | dose | unit        | optional |
-|:--------------------------------------------------------------|:-----------------------------------------|:-----|:-----|:-----|:------------|---------:|
-| 1 tablet to be taken daily                                    | 1 tab to be taken                        | 1    | 1    | 1    | tab         |        0 |
-| 2.5ml four times a day when required                          | 2.5 ml                                   | 4    | 1    | 2.5  | ml          |        1 |
-| 1.25mls three times a day                                     | 1.25 ml                                  | 3    | 1    | 1.25 | ml          |        0 |
-| take 10mls q.d.s. p.r.n.                                      | 10 ml                                    | 1    | 1    | 10   | ml          |        1 |
-| take 1 or 2 4 times/day                                       | 1 - 2                                    | 4    | 1    | 1-2  | NA          |        0 |
-| 2x5ml spoon 4 times/day                                       | 2 x 5 ml spoonful                        | 4    | 1    | 10   | ml spoonful |        0 |
-| take 2 tablets every six hours max eight in twenty four hours | 2 tab 0 - 8 in 24 hours                  | 4    | 1    | 2    | tab         |        0 |
-| 1 tab nocte twenty eight tablets                              | 1 tab 28 tab                             | 1    | 1    | 1    | tab         |        0 |
-| 1-2 four times a day when required                            | 1 - 2                                    | 4    | 1    | 1-2  | NA          |        1 |
-| take one twice daily                                          | 1                                        | 2    | 1    | 1    | NA          |        0 |
-| 1 q4h prn                                                     | 1                                        | 6    | 1    | 1    | NA          |        1 |
-| take two every three days                                     | 2                                        | 1    | 3    | 2    | NA          |        0 |
-| five every week                                               | 5                                        | 1    | 7    | 5    | NA          |        0 |
-| every 72 hours                                                |                                          | 1    | 3    | NA   | NA          |        0 |
-| 1 x 5 ml spoon 4 / day for 10 days                            | 1 x 5 ml spoonful for 10 days            | 4    | 1    | 5    | ml spoonful |        0 |
-| two to three times a day                                      |                                          | 2-3  | 1    | NA   | NA          |        0 |
-| three times a week                                            |                                          | 1    | 2-3  | NA   | NA          |        0 |
-| three 5ml spoonsful to be taken four times a day after food   | 3 x 5 ml spoonful to be taken after food | 4    | 1    | 15   | ml spoonful |        0 |
-| take one or two every 4-6 hrs                                 | 1 - 2                                    | 4-6  | 1    | 1-2  | NA          |        0 |
-| 5ml 3 hrly when required                                      | 5 ml                                     | 8    | 1    | 5    | ml          |        1 |
-| one every morning to reduce bp                                | 1 to reduce bp                           | 1    | 1    | 1    | NA          |        0 |
-| take 1 or 2 6hrly when required                               | 1 - 2                                    | 4    | 1    | 1-2  | NA          |        1 |
-| take 1 or 2 four times a day as required for pain             | 1 - 2 for pain                           | 4    | 1    | 1-2  | NA          |        1 |
-| take 1 or 2 4 times/day if needed for pain                    | 1 - 2 for pain                           | 4    | 1    | 1-2  | NA          |        1 |
-| 1-2 tablets up to four times daily                            | 1 - 2 tab                                | 0-4  | 1    | 1-2  | tab         |        1 |
-| take one or two tablets 6-8 hrly every 2-3 days               | 1 - 2 tab                                | 3-4  | 2-3  | 1-2  | tab         |        0 |
-| one and a half tablets every three hours                      | 1.5 tab                                  | 8    | 1    | 1.5  | tab         |        0 |
+| raw                                                           | freq | itvl | dose | unit        | optional |
+| :------------------------------------------------------------ | :--- | :--- | :--- | :---------- | -------: |
+| 1 tablet to be taken daily                                    | 1    | 1    | 1    | tab         |        0 |
+| 2.5ml four times a day when required                          | 4    | 1    | 2.5  | ml          |        1 |
+| 1.25mls three times a day                                     | 3    | 1    | 1.25 | ml          |        0 |
+| take 10mls q.d.s. p.r.n.                                      | 1    | 1    | 10   | ml          |        1 |
+| take 1 or 2 4 times/day                                       | 4    | 1    | 1-2  | NA          |        0 |
+| 2x5ml spoon 4 times/day                                       | 4    | 1    | 10   | ml spoonful |        0 |
+| take 2 tablets every six hours max eight in twenty four hours | 4    | 1    | 2    | tab         |        0 |
+| 1 tab nocte twenty eight tablets                              | 1    | 1    | 1    | tab         |        0 |
+| 1-2 four times a day when required                            | 4    | 1    | 1-2  | NA          |        1 |
+| take one twice daily                                          | 2    | 1    | 1    | NA          |        0 |
+| 1 q4h prn                                                     | 6    | 1    | 1    | NA          |        1 |
+| take two every three days                                     | 1    | 3    | 2    | NA          |        0 |
+| five every week                                               | 1    | 7    | 5    | NA          |        0 |
+| every 72 hours                                                | 1    | 3    | NA   | NA          |        0 |
+| 1 x 5 ml spoon 4 / day for 10 days                            | 4    | 1    | 5    | ml spoonful |        0 |
+| two to three times a day                                      | 2-3  | 1    | NA   | NA          |        0 |
+| three times a week                                            | 1    | 2-3  | NA   | NA          |        0 |
+| three 5ml spoonsful to be taken four times a day after food   | 4    | 1    | 15   | ml spoonful |        0 |
+| take one or two every 4-6 hrs                                 | 4-6  | 1    | 1-2  | NA          |        0 |
+| 5ml 3 hrly when required                                      | 8    | 1    | 5    | ml          |        1 |
+| one every morning to reduce bp                                | 1    | 1    | 1    | NA          |        0 |
+| take 1 or 2 6hrly when required                               | 4    | 1    | 1-2  | NA          |        1 |
+| take 1 or 2 four times a day as required for pain             | 4    | 1    | 1-2  | NA          |        1 |
+| take 1 or 2 4 times/day if needed for pain                    | 4    | 1    | 1-2  | NA          |        1 |
+| 1-2 tablets up to four times daily                            | 0-4  | 1    | 1-2  | tab         |        1 |
+| take one or two tablets 6-8 hrly every 2-3 days               | 3-4  | 2-3  | 1-2  | tab         |        0 |
+| one and a half tablets every three hours                      | 8    | 1    | 1.5  | tab         |        0 |
 
 </div>
 
