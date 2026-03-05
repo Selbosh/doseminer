@@ -16,7 +16,7 @@
 #' it has been adapted to offer (experimental) support for this.
 #' Phrases like "million" or "thousand" with no prefix will \emph{not} match.
 #'
-#' @source \url{https://www.rexegg.com/regex-trick-numbers-in-english.html}
+#' @source \url{https://www.rexegg.com/regex-trick-numbers-in-english.php}
 regex_numbers <- "(?x)           # free-spacing mode
 (?(DEFINE)
   # Within this DEFINE block, we'll define many subroutines
@@ -147,7 +147,10 @@ regex_numbers <- "(?x)           # free-spacing mode
 replace_numbers <- function(string) {
   #string <- str_remove_all(string, '(?:\\band|&)[ ]?')
   matches <- gregexpr(regex_numbers, string, perl = TRUE, ignore.case = TRUE)
-  regmatches(string, matches) <- lapply(regmatches(string, matches), words2number)
+  regmatches(string, matches) <- lapply(
+    regmatches(string, matches),
+    words2number
+  )
   string
 }
 
@@ -173,7 +176,8 @@ replace_numbers <- function(string) {
 #'
 #' @source \url{https://github.com/benmarwick/words2number}
 numb_replacements <-
-  c('-' = ' ',
+  c(
+    '-' = ' ',
     'eleven(?:th)?' = '+11',
     'twel(?:ve|fth)' = '+12',
     'thirteen(?:th)?' = '+13',
@@ -250,12 +254,15 @@ numb_replacements <-
 #'
 #' @export
 words2number <- function(txt) {
-  if (length(txt) < 1)
+  if (length(txt) < 1) {
     return(txt)
-  if (any(lengths(txt) > 1))
+  }
+  if (any(lengths(txt) > 1)) {
     stop('words2number does not work on nested lists')
-  if (!is.character(txt[[1]]))
+  }
+  if (!is.character(txt[[1]])) {
     stop('words2number should only be passed character-vector inputs')
+  }
   expression <- stringr::str_replace_all(tolower(txt), numb_replacements)
   result <- vapply(expression, function(e) eval(parse(text = e)), FUN.VALUE = 0)
   setNames(result, txt)
@@ -326,4 +333,3 @@ latin_medical_terms <- c(
   mdu = 'as directed',
   `asd(?:ir)?` = 'as directed'
 )
-

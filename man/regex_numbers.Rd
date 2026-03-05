@@ -8,7 +8,7 @@
 An object of class \code{character} of length 1.
 }
 \source{
-\url{https://www.rexegg.com/regex-trick-numbers-in-english.html}
+\url{https://www.rexegg.com/regex-trick-numbers-in-english.php}
 }
 \usage{
 regex_numbers
