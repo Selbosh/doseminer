@@ -18,9 +18,14 @@ Useful links:
 \author{
 \strong{Maintainer}: David Selby \email{david_antony.selby@dfki.de} (\href{https://orcid.org/0000-0001-8026-5663}{ORCID})
 
+Authors:
+\itemize{
+  \item David Selby \email{david_antony.selby@dfki.de} (\href{https://orcid.org/0000-0001-8026-5663}{ORCID})
+}
+
 Other contributors:
 \itemize{
-  \item Belay Birlie Yimer \email{belaybirlie.yimer@manchester.ac.uk} [contributor]
+  \item Belay Birlie Yimer \email{belaybirlie.yimer@astellas.com} [contributor]
   \item Ben Marwick \email{benmarwick@gmail.com} [contributor]
 }
 

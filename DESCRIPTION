@@ -1,7 +1,7 @@
 Package: doseminer
 Type: Package
 Title: Extract Drug Dosages from Free-Text Prescriptions
-Version: 0.2.0
+Version: 0.2.1
 Authors@R:
   c(person(given = 'David',
            family = 'Selby',
@@ -10,7 +10,7 @@ Authors@R:
            comment = c(ORCID = '0000-0001-8026-5663')),
     person(given = 'Belay Birlie',
            family = 'Yimer',
-           email = 'belaybirlie.yimer@manchester.ac.uk',
+           email = 'belaybirlie.yimer@astellas.com',
            role = 'ctb'),
     person(given = 'Ben',
            family = 'Marwick',
@@ -32,8 +32,8 @@ Suggests:
     dplyr,
     ggplot2,
     prettydoc
-RoxygenNote: 7.3.3
 Depends:
   R (>= 3.5.0)
 VignetteBuilder: knitr
 Language: en-GB
+Config/roxygen2/version: 8.0.0

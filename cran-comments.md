@@ -10,3 +10,5 @@
 * The maintainer address in DESCRIPTION is now valid and monitored.
 * Also fixed: moved URL in `regex_numbers` documentation.
 * Some spell-check notes may appear, triggered by proper names
+* "\dontrun{}" has been removed from an example that demonstrated a non-exported object
+

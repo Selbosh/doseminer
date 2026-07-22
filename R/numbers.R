@@ -166,9 +166,7 @@ replace_numbers <- function(string) {
 #' a named vector (previously a chain of \code{\link{gsub}} calls).
 #'
 #' @examples
-#' \dontrun{
-#' stringr::str_replace_all('one hundred and forty-two', numb_replacements)
-#' }
+#' stringr::str_replace_all('one hundred and forty-two', doseminer:::numb_replacements)
 #'
 #' @note
 #' Does not yet fully support decimals, fractions or mixed fractions.
