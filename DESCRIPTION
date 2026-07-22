@@ -5,7 +5,7 @@ Version: 0.2.1
 Authors@R:
   c(person(given = 'David',
            family = 'Selby',
-           role = c('aut', 'cre'),
+           role = c('aut', 'cre', 'cph'),
            email = 'david_antony.selby@dfki.de',
            comment = c(ORCID = '0000-0001-8026-5663')),
     person(given = 'Belay Birlie',
@@ -37,3 +37,4 @@ Depends:
 VignetteBuilder: knitr
 Language: en-GB
 Config/roxygen2/version: 8.0.0
+URL: https://github.com/Selbosh/doseminer
