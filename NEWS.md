@@ -1,3 +1,9 @@
+# doseminer (development version)
+
+# doseminer 0.2.1
+
+* Fix maintainer e-mail addresses
+
 # doseminer 0.2.0
 
 * Adds fix for breaking change introduced by upstream dependency `stringr`. Thanks to @hadley. 
