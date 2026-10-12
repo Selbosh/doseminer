@@ -1,5 +1,7 @@
 # doseminer (development version)
 
+* Fixed the Latin abbreviation "qds" (*quater die sumendus*) being translated as "daily" (frequency 1) instead of "four times a day" (frequency 4). "qd" (*quaque die*) is still translated as "daily". Thanks to Alex Haddy for reporting.
+
 # doseminer 0.2.1
 
 * Fix maintainer e-mail addresses

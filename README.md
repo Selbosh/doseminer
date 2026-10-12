@@ -84,7 +84,7 @@ extract_from_prescription(example_prescriptions)
 | 1 tablet to be taken daily                                    | 1    | 1    | 1    | tab         |        0 |
 | 2.5ml four times a day when required                          | 4    | 1    | 2.5  | ml          |        1 |
 | 1.25mls three times a day                                     | 3    | 1    | 1.25 | ml          |        0 |
-| take 10mls q.d.s. p.r.n.                                      | 1    | 1    | 10   | ml          |        1 |
+| take 10mls q.d.s. p.r.n.                                      | 4    | 1    | 10   | ml          |        1 |
 | take 1 or 2 4 times/day                                       | 4    | 1    | 1-2  | NA          |        0 |
 | 2x5ml spoon 4 times/day                                       | 4    | 1    | 10   | ml spoonful |        0 |
 | take 2 tablets every six hours max eight in twenty four hours | 4    | 1    | 2    | tab         |        0 |
