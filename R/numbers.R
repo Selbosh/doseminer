@@ -302,7 +302,10 @@ latin_medical_terms <- c(
   bt = 'bedtime',
   qam = 'every morning',
   qpm = 'every afternoon',
-  `qds?` = 'daily',
+  # "qds" = quater die sumendus (four times a day), common in UK prescribing.
+  # Not to be confused with "qd" = quaque die (every day).
+  `\\bqds\\b` = '4 / day',
+  `\\bqd\\b` = 'daily',
   q1d = 'daily',
   qid = '4 / day',
   qwk = 'every week',

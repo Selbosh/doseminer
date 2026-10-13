@@ -21,3 +21,15 @@ test_that('Do not parse frequency abbreviations in middle of words', {
     out4 <- extract_from_prescription(example4)
     expect_equal(out4$freq, NA_character_) # not '3' (= t.d.)
 })
+
+test_that('Latin "qds" means four times a day, not daily', {
+    qds <- extract_from_prescription(c('take 10mls q.d.s. p.r.n.',
+                                       'take 10mls qds prn',
+                                       'take 2 qds',
+                                       '10mgqds'))
+    expect_equal(qds$freq, rep('4', 4))
+    expect_equal(qds$optional, c(1, 1, 0, 0))
+    # "qd" (quaque die) is once a day
+    qd <- extract_from_prescription(c('1 tab qd', '1 tab q.d.'))
+    expect_equal(qd$freq, c('1', '1'))
+})
